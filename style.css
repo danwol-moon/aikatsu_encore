@@ -12,11 +12,7 @@ html{background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100vh}
 button,input,select{font:inherit}
 .wrap{width:min(1400px,100%);margin:0 auto;padding-bottom:40px}
-.cover{
-  background:linear-gradient(180deg,#ffdce6 0%,var(--cover) 58%,#f9bfd1 100%);
-  padding:34px 20px 26px;text-align:center;border-radius:0 0 28px 28px;
-  box-shadow:0 5px 20px rgba(180,84,120,.12)
-}
+.cover{background:linear-gradient(180deg,#ffdce6 0%,var(--cover) 58%,#f9bfd1 100%);padding:34px 20px 26px;text-align:center;border-radius:0 0 28px 28px;box-shadow:0 5px 20px rgba(180,84,120,.12)}
 .cover h1{font-family:var(--display);font-weight:400;font-size:38px;margin:0;color:var(--cover-ink);letter-spacing:.02em}
 .cover .sub{margin:6px 0 0;color:var(--cover-soft);font-size:14px;letter-spacing:.05em}
 .controls{padding:16px 18px 8px}
@@ -30,31 +26,23 @@ main{padding:8px 18px}
 #error{color:#b33a64;background:#fff;border:1px solid #f2c8d6;border-radius:14px}
 .card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .card-page{display:contents}
-.card{
-  border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:8px;
-  cursor:pointer;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s
-}
+.card{border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:8px;cursor:pointer;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s}
 .card:hover{transform:translateY(-3px);box-shadow:0 9px 24px rgba(177,83,119,.18)}
-.card-image{
-  aspect-ratio:1/1.38;background:var(--pocket);border:1px solid var(--pocket-edge);
-  border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden
-}
+.card-image{aspect-ratio:1/1.38;background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .card-image img{width:100%;height:100%;object-fit:contain;display:block}
 .card-image.accessory-card img{transform:rotate(90deg) scale(.72);transform-origin:center center}
 .card-name{font-family:var(--display);font-size:15px;text-align:center;padding:8px 4px 1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-id{text-align:center;font-size:11px;color:var(--ink-soft);padding:1px 0 3px}
+.book-pager{display:none}
 .modal{position:fixed;inset:0;z-index:100}
 .modal[hidden]{display:none}
 .modal-backdrop{position:absolute;inset:0;background:rgba(74,38,52,.48);backdrop-filter:blur(2px)}
-.modal-dialog{
-  position:relative;width:min(900px,94vw);max-height:92vh;overflow:auto;margin:4vh auto;
-  background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;
-  box-shadow:0 20px 60px rgba(74,38,52,.25);z-index:1
-}
+.modal-dialog{position:relative;width:min(900px,94vw);max-height:92vh;overflow:auto;margin:4vh auto;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 20px 60px rgba(74,38,52,.25);z-index:1}
 .modal-close{position:absolute;right:12px;top:8px;width:40px;height:40px;border:0;background:var(--chip);color:var(--cover-ink);border-radius:50%;font-size:29px;line-height:1;cursor:pointer}
 .detail-images{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:10px auto 20px}
 .detail-pocket{background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .detail-pocket img{width:100%;height:auto;display:block;object-fit:contain}
+.detail-pocket img.accessory-detail{transform:rotate(-90deg) scale(.72);transform-origin:center center}
 .names{text-align:center;margin-bottom:18px}
 .name-ko{font-family:var(--display);font-size:27px}
 .name-ja{font-size:15px;color:var(--ink-soft);margin-top:4px}
@@ -63,16 +51,23 @@ main{padding:8px 18px}
 .gap{display:inline-block;width:30px}
 @media(max-width:1024px){.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){
-  .card-grid{display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:12px;padding:4px 8px 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .card-grid::-webkit-scrollbar{display:none}
-  .card-page{display:grid;flex:0 0 100%;width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;scroll-snap-align:center;scroll-snap-stop:always;padding:0 2px}
-  .card{width:auto}
-
+  main{padding:6px 12px}
   .cover{padding:26px 16px 21px;border-radius:0 0 22px 22px}
-  .cover h1{font-size:30px}.controls{padding:12px 12px 6px}main{padding:6px 12px}
+  .cover h1{font-size:30px}
+  .controls{padding:12px 12px 6px}
   .filters{gap:6px}.filters select{font-size:13px;padding:0 6px}
-  .card-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{padding:6px;border-radius:13px}
+  .card-grid{display:block;overflow:hidden;padding:4px 2px 4px;position:relative;touch-action:pan-y}
+  .card-grid.book-mode .card-page{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:100%;padding:0;transform:translateX(calc(var(--mobile-page) * -100%));transition:transform .32s ease}
+  .card-grid.book-mode .card-page:not(:first-child){margin-top:-1000px;visibility:hidden}
+  .card-grid.book-mode .card-page:first-child{margin-top:0}
+  .card-grid.book-mode{height:auto;min-height:1px}
+  .card-grid.book-mode .card-page{position:relative}
+  .card{width:auto;padding:6px;border-radius:13px}
   .card-name{font-size:12px;padding-top:6px}.card-id{font-size:10px}
+  .book-pager{display:flex;align-items:center;justify-content:center;gap:18px;margin:8px 0 4px}
+  .book-pager button{width:38px;height:38px;border:1px solid var(--line);background:var(--paper);color:var(--accent);border-radius:50%;font-size:28px;line-height:1;box-shadow:var(--shadow);cursor:pointer}
+  .book-pager button:disabled{opacity:.3;cursor:default}
+  .book-pager span{min-width:52px;text-align:center;font-size:12px;color:var(--ink-soft)}
   .modal-dialog{width:96vw;margin:2vh auto;padding:16px;border-radius:18px}
   .detail-images{gap:8px}.name-ko{font-size:21px}.name-ja{font-size:13px}.info{font-size:12px}.gap{width:10px}
 }

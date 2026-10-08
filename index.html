@@ -1,33 +1,48 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aikatsu Encore Binder</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffd1de">
+<title>아이카츠 앙코르</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>Aikatsu Encore Binder</h1>
-  <div class="controls">
-    <input id="search" type="search" placeholder="검색 (ID / 이름 / 카테고리)">
-    <select id="category"><option value="">카테고리 전체</option></select>
-    <select id="type"><option value="">타입 전체</option></select>
-    <select id="grade"><option value="">등급 전체</option></select>
-  </div>
-</header>
-<main>
-  <div id="loading">데이터를 불러오는 중...</div>
-  <div id="error" hidden></div>
-  <section id="grid" class="card-grid"></section>
-</main>
+<div class="wrap">
+  <header class="cover">
+    <h1>아이카츠 앙코르</h1>
+    <p class="sub">Aikatsu Encore Binder</p>
+  </header>
+
+  <nav class="controls" aria-label="카드 검색 및 필터">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="search" type="search" placeholder="ID / 이름 / 카테고리 검색" autocomplete="off">
+    </div>
+    <div class="filters">
+      <select id="category"><option value="">카테고리 전체</option></select>
+      <select id="type"><option value="">타입 전체</option></select>
+      <select id="grade"><option value="">등급 전체</option></select>
+    </div>
+  </nav>
+
+  <main>
+    <div id="loading">카드를 불러오는 중...</div>
+    <div id="error" hidden></div>
+    <section id="grid" class="card-grid" aria-live="polite"></section>
+  </main>
+</div>
+
 <div id="modal" class="modal" hidden>
   <div class="modal-backdrop"></div>
-  <div class="modal-dialog">
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="카드 상세">
     <button id="modalClose" class="modal-close" aria-label="닫기">×</button>
     <div class="detail-images">
-      <div><img id="detailFront" alt="앞면"></div>
-      <div><img id="detailBack" alt="뒷면"></div>
+      <div class="detail-pocket"><img id="detailFront" alt="앞면"></div>
+      <div class="detail-pocket"><img id="detailBack" alt="뒷면"></div>
     </div>
     <div class="names">
       <div id="detailKo" class="name-ko"></div>

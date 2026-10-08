@@ -53,14 +53,21 @@ function filtered(){
 }
 function render(){
   $("grid").innerHTML="";
-  filtered().forEach(card=>{
+  const list=filtered();
+  list.forEach((card,index)=>{
+    if(index%4===0){
+      const page=document.createElement("div");
+      page.className="card-page";
+      $("grid").appendChild(page);
+    }
+    const page=$("grid").lastElementChild;
     const el=document.createElement("article");
     el.className="card";
     const normalizedType=String(card.type??"").trim().replace(/\s+/g,"");
     const isAccessory=/^악세서리$/i.test(normalizedType);
     el.innerHTML=`<div class="card-image${isAccessory?" accessory-card":""}"><img src="${esc(card.front)}" alt="${esc(card.nameKo)}" loading="lazy"></div><div class="card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div><div class="card-id">ID : ${esc(card.id)}</div>`;
     el.addEventListener("click",()=>openModal(card));
-    $("grid").appendChild(el);
+    page.appendChild(el);
   });
 }
 function openModal(card){

@@ -93,12 +93,12 @@ function render(){
 function updateMobilePager(){
   const grid=$( "grid");
   const isMobile=window.matchMedia("(max-width:600px)").matches;
+  const pages=[...grid.querySelectorAll(".card-page")];
+  pages.forEach((page,index)=>page.classList.toggle("book-active",isMobile && index===mobilePage));
   if(isMobile && mobilePageCount>0){
-    grid.style.setProperty("--mobile-page",mobilePage);
     grid.classList.add("book-mode");
   }else{
     grid.classList.remove("book-mode");
-    grid.style.removeProperty("--mobile-page");
   }
   const prev=$( "pagePrev"),next=$( "pageNext"),indicator=$( "pageIndicator");
   if(prev&&next&&indicator){

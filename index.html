@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aikatsu Encore Binder</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Aikatsu Encore Binder</h1>
+  <div class="controls">
+    <input id="search" type="search" placeholder="검색 (ID / 이름 / 카테고리)">
+    <select id="category"><option value="">카테고리 전체</option></select>
+    <select id="type"><option value="">타입 전체</option></select>
+    <select id="grade"><option value="">등급 전체</option></select>
+  </div>
+</header>
+<main>
+  <div id="loading">데이터를 불러오는 중...</div>
+  <div id="error" hidden></div>
+  <section id="grid" class="card-grid"></section>
+</main>
+<div id="modal" class="modal" hidden>
+  <div class="modal-backdrop"></div>
+  <div class="modal-dialog">
+    <button id="modalClose" class="modal-close" aria-label="닫기">×</button>
+    <div class="detail-images">
+      <div><img id="detailFront" alt="앞면"></div>
+      <div><img id="detailBack" alt="뒷면"></div>
+    </div>
+    <div class="names">
+      <div id="detailKo" class="name-ko"></div>
+      <div id="detailJa" class="name-ja"></div>
+    </div>
+    <div class="info">
+      <div><span>ID</span> : <b id="detailId"></b><span class="gap"></span><span>등급</span> : <b id="detailGrade"></b></div>
+      <div><span>타입</span> : <b id="detailType"></b></div>
+      <div><span>카테고리</span> : <b id="detailCategory"></b></div>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

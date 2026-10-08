@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20261009">
 </head>
 <body>
 <div class="wrap">
@@ -16,7 +16,6 @@
     <h1>아이카츠 앙코르</h1>
     <p class="sub">Aikatsu Encore Binder</p>
   </header>
-
   <nav class="controls" aria-label="카드 검색 및 필터">
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
@@ -28,11 +27,15 @@
       <select id="grade"><option value="">등급 전체</option></select>
     </div>
   </nav>
-
   <main>
     <div id="loading">카드를 불러오는 중...</div>
     <div id="error" hidden></div>
     <section id="grid" class="card-grid" aria-live="polite"></section>
+    <div class="book-pager" aria-label="모바일 카드 페이지 이동">
+      <button id="pagePrev" type="button" aria-label="이전 페이지">‹</button>
+      <span id="pageIndicator"></span>
+      <button id="pageNext" type="button" aria-label="다음 페이지">›</button>
+    </div>
   </main>
 </div>
 
@@ -55,6 +58,6 @@
     </div>
   </div>
 </div>
-<script src="script.js"></script>
+<script src="script.js?v=20261009"></script>
 </body>
 </html>

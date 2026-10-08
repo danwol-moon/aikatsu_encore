@@ -1,11 +1,13 @@
 const SHEET_ID="1SL3XZqx5KBbCqUyPcN62YuGSnctC7SHGdHI43aFFs24";
 const SHEET_GID="1943463274";
-const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
+const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A2:H`;
 
 let cards=[];
 const $=id=>document.getElementById(id);
 
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function esc(v){
+  return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
 
 async function loadData(){
   try{
@@ -42,9 +44,10 @@ function buildFilters(){
   fillSelect("grade",cards.map(x=>x.grade));
 }
 function filtered(){
-  const q=$("search").value.trim().toLowerCase(), cat=$("category").value, type=$("type").value, grade=$("grade").value;
+  const q=$("search").value.trim().toLowerCase();
+  const cat=$("category").value,type=$("type").value,grade=$("grade").value;
   return cards.filter(x=>
-    (!q||[x.id,x.category,x.type,x.grade,x.nameJa,x.nameKo].some(v=>String(v).toLowerCase().includes(q))) &&
+    (!q||[x.id,x.category,x.type,x.grade,x.nameJa,x.nameKo].some(v=>String(v).toLowerCase().includes(q)))&&
     (!cat||x.category===cat)&&(!type||x.type===type)&&(!grade||x.grade===grade)
   );
 }
@@ -70,7 +73,10 @@ function openModal(card){
   $("modal").hidden=false;
   document.body.style.overflow="hidden";
 }
-function closeModal(){$("modal").hidden=true;document.body.style.overflow="";}
+function closeModal(){
+  $("modal").hidden=true;
+  document.body.style.overflow="";
+}
 $("modalClose").addEventListener("click",closeModal);
 document.querySelector(".modal-backdrop").addEventListener("click",closeModal);
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("modal").hidden)closeModal()});

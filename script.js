@@ -56,7 +56,9 @@ function render(){
   filtered().forEach(card=>{
     const el=document.createElement("article");
     el.className="card";
-    el.innerHTML=`<div class="card-image"><img class="${card.type==="악세서리"?"accessory":""}" src="${esc(card.front)}" alt="${esc(card.nameKo)}" loading="lazy"></div><div class="card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div><div class="card-id">ID : ${esc(card.id)}</div>`;
+    const normalizedType=String(card.type??"").trim().replace(/\\s+/g,"");
+    const isAccessory=normalizedType==="악세서리";
+    el.innerHTML=`<div class="card-image${isAccessory?" accessory-card":""}"><img src="${esc(card.front)}" alt="${esc(card.nameKo)}" loading="lazy"></div><div class="card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div><div class="card-id">ID : ${esc(card.id)}</div>`;
     el.addEventListener("click",()=>openModal(card));
     $("grid").appendChild(el);
   });

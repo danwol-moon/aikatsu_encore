@@ -29,6 +29,7 @@ main{padding:8px 18px}
 #loading,#error{text-align:center;padding:35px 10px;color:var(--ink-soft)}
 #error{color:#b33a64;background:#fff;border:1px solid #f2c8d6;border-radius:14px}
 .card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card-page{display:contents}
 .card{
   border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:8px;
   cursor:pointer;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s
@@ -64,7 +65,8 @@ main{padding:8px 18px}
 @media(max-width:600px){
   .card-grid{display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:12px;padding:4px 8px 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .card-grid::-webkit-scrollbar{display:none}
-  .card{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always}
+  .card-page{display:grid;flex:0 0 100%;width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;scroll-snap-align:center;scroll-snap-stop:always;padding:0 2px}
+  .card{width:auto}
 
   .cover{padding:26px 16px 21px;border-radius:0 0 22px 22px}
   .cover h1{font-size:30px}.controls{padding:12px 12px 6px}main{padding:6px 12px}

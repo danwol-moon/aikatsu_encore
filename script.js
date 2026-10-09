@@ -18,7 +18,7 @@ function normalize(v){
 }
 
 function isAccessory(card){
-  return normalize(card.type)==="악세서리";
+  return normalize(card.type)==="악세서리" || normalize(card.category)==="악세서리";
 }
 
 async function loadData(){

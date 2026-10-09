@@ -47,19 +47,33 @@ async function loadData(){
   }
 }
 
-function fillSelect(id,values){
+function fillSelect(id,values,order=[]){
   const el=$(id), first=el.options[0];
   el.innerHTML="";
   el.appendChild(first);
-  [...new Set(values.filter(Boolean).map(String))].sort((a,b)=>a.localeCompare(b,"ko")).forEach(v=>{
+  const rank=value=>{
+    const normalized=normalize(value);
+    // '액세서리'와 기존 시트의 표기 '악세서리'를 같은 마지막 순서로 취급합니다.
+    const key=normalized==="악세서리"?"액세서리":normalized;
+    return order.findIndex(item=>normalize(item)===key);
+  };
+  [...new Set(values.filter(Boolean).map(String))].sort((a,b)=>{
+    const ra=rank(a),rb=rank(b);
+    if(ra!==-1||rb!==-1){
+      if(ra===-1)return 1;
+      if(rb===-1)return -1;
+      if(ra!==rb)return ra-rb;
+    }
+    return a.localeCompare(b,"ko");
+  }).forEach(v=>{
     const o=document.createElement("option");
     o.value=v;o.textContent=v;el.appendChild(o);
   });
 }
 function buildFilters(){
-  fillSelect("category",cards.map(x=>x.category));
-  fillSelect("type",cards.map(x=>x.type));
-  fillSelect("grade",cards.map(x=>x.grade));
+  fillSelect("category",cards.map(x=>x.category),["풀코디","상의","하의","원피스","슈즈","액세서리"]);
+  fillSelect("type",cards.map(x=>x.type),["큐티","쿨","섹시","팝"]);
+  fillSelect("grade",cards.map(x=>x.grade),["ER","PR","R","N"]);
 }
 function filtered(){
   const q=$( "search").value.trim().toLowerCase();

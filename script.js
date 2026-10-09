@@ -31,7 +31,7 @@ async function loadData(){
       const c=r.c||[];
       const v=i=>c[i]?.v??"";
       return {id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
-    }).filter(x=>x.id||x.nameKo||x.front);
+    }).filter(x=>String(x.front??"").trim()!=="" && String(x.back??"").trim()!=="");
     buildFilters();
     render();
     $("loading").hidden=true;

@@ -119,7 +119,8 @@ function openModal(card){
   const accessory=isAccessory(card);
   $("detailFront").src=card.front||"";
   $("detailBack").src=card.back||"";
-  $("detailFront").classList.toggle("accessory-detail",accessory);
+  // 상세 화면에서는 악세서리도 원본 방향(가로)을 유지합니다.
+  $("detailFront").classList.remove("accessory-detail");
   $("detailBack").classList.remove("accessory-detail");
   $("detailKo").textContent=card.nameKo||"";
   $("detailJa").textContent=card.nameJa||"";

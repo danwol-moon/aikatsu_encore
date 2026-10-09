@@ -72,7 +72,25 @@ function fillSelect(id,values,order=[]){
 }
 function buildFilters(){
   fillSelect("category",cards.map(x=>x.category),["풀코디","상의","하의","원피스","슈즈","액세서리"]);
-  fillSelect("type",cards.map(x=>x.type),["큐티","쿨","섹시","팝"]);
+  // 타입은 원하는 순서를 전용 정렬 순위로 고정합니다.
+  const typeOrder=["큐티","쿨","섹시","팝"];
+  const typeValues=[...new Set(cards.map(x=>String(x.type??"")).filter(v=>v.trim()))];
+  const typeRank=value=>typeOrder.findIndex(item=>normalize(item)===normalize(value));
+  const typeSelect=$("type"), typeFirst=typeSelect.options[0];
+  typeSelect.innerHTML="";
+  typeSelect.appendChild(typeFirst);
+  typeValues.sort((a,b)=>{
+    const ra=typeRank(a), rb=typeRank(b);
+    if(ra===-1 && rb===-1)return a.localeCompare(b,"ko");
+    if(ra===-1)return 1;
+    if(rb===-1)return -1;
+    return ra-rb;
+  }).forEach(v=>{
+    const option=document.createElement("option");
+    option.value=v;
+    option.textContent=v;
+    typeSelect.appendChild(option);
+  });
   fillSelect("grade",cards.map(x=>x.grade),["ER","PR","R","N"]);
 }
 function filtered(){

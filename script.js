@@ -21,6 +21,10 @@ function isAccessory(card){
   return normalize(card.type)==="악세서리" || normalize(card.category)==="악세서리";
 }
 
+function hasImageUrl(value){
+  return typeof value==="string" && value.trim()!=="";
+}
+
 async function loadData(){
   try{
     const res=await fetch(endpoint);
@@ -31,7 +35,8 @@ async function loadData(){
       const c=r.c||[];
       const v=i=>c[i]?.v??"";
       return {id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
-    }).filter(x=>String(x.front??"").trim()!=="" && String(x.back??"").trim()!=="");
+    // ID가 있어도 앞면과 뒷면 이미지가 모두 있는 카드만 사이트에 표시합니다.
+    }).filter(x=>hasImageUrl(x.front) && hasImageUrl(x.back));
     buildFilters();
     render();
     $("loading").hidden=true;

@@ -72,10 +72,15 @@ function fillSelect(id,values,order=[]){
 }
 function buildFilters(){
   fillSelect("category",cards.map(x=>x.category),["풀코디","상의","하의","원피스","슈즈","액세서리"]);
-  // 타입은 원하는 순서를 전용 정렬 순위로 고정합니다.
-  const typeOrder=["큐티","쿨","섹시","팝"];
+  // 시트의 실제 표기인 '큐트'와 '큐티'를 같은 항목으로 인식해 지정 순서로 정렬합니다.
+  const typeOrder=["큐트","큐티","쿨","섹시","팝"];
   const typeValues=[...new Set(cards.map(x=>String(x.type??"")).filter(v=>v.trim()))];
-  const typeRank=value=>typeOrder.findIndex(item=>normalize(item)===normalize(value));
+  const canonicalType=value=>{
+    const key=normalize(value);
+    if(key==="큐트"||key==="큐티")return "큐트";
+    return key;
+  };
+  const typeRank=value=>typeOrder.findIndex(item=>canonicalType(item)===canonicalType(value));
   const typeSelect=$("type"), typeFirst=typeSelect.options[0];
   typeSelect.innerHTML="";
   typeSelect.appendChild(typeFirst);

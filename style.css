@@ -40,7 +40,7 @@ main{padding:8px 18px}
   max-width:none;
   flex:none;
   object-fit:contain;
-  transform:translate(-50%,-50%) rotate(-90deg);
+  transform:translate(-50%,-50%) rotate(90deg);
   transform-origin:center center
 }
 .card-name{font-family:var(--display);font-size:15px;text-align:center;padding:8px 4px 1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

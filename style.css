@@ -30,7 +30,19 @@ main{padding:8px 18px}
 .card:hover{transform:translateY(-3px);box-shadow:0 9px 24px rgba(177,83,119,.18)}
 .card-image{aspect-ratio:1/1.38;background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .card-image img{width:100%;height:100%;object-fit:contain;display:block}
-.card-image.accessory-card img{transform:rotate(90deg) scale(.72);transform-origin:center center}
+.card-image.accessory-card{position:relative}
+.card-image.accessory-card img{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:138%;
+  height:72.46%;
+  max-width:none;
+  flex:none;
+  object-fit:contain;
+  transform:translate(-50%,-50%) rotate(-90deg);
+  transform-origin:center center
+}
 .card-name{font-family:var(--display);font-size:15px;text-align:center;padding:8px 4px 1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-id{text-align:center;font-size:11px;color:var(--ink-soft);padding:1px 0 3px}
 .book-pager{display:none}
@@ -42,7 +54,7 @@ main{padding:8px 18px}
 .detail-images{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:10px auto 20px}
 .detail-pocket{background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .detail-pocket img{width:100%;height:auto;display:block;object-fit:contain}
-.detail-pocket img.accessory-detail{transform:rotate(-90deg) scale(.72);transform-origin:center center}
+/* 상세 화면의 앞면·뒷면은 원본 이미지 방향을 유지합니다. */
 .names{text-align:center;margin-bottom:18px}
 .name-ko{font-family:var(--display);font-size:27px}
 .name-ja{font-size:15px;color:var(--ink-soft);margin-top:4px}

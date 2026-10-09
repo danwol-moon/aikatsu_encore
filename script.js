@@ -91,28 +91,14 @@ function render(){
 }
 
 function updateMobilePager(){
-  const grid=$( "grid");
-  const isMobile=window.matchMedia("(max-width:600px)").matches;
-  const pages=[...grid.querySelectorAll(".card-page")];
-  pages.forEach((page,index)=>page.classList.toggle("book-active",isMobile && index===mobilePage));
-  if(isMobile && mobilePageCount>0){
-    grid.classList.add("book-mode");
-  }else{
-    grid.classList.remove("book-mode");
-  }
-  const prev=$( "pagePrev"),next=$( "pageNext"),indicator=$( "pageIndicator");
-  if(prev&&next&&indicator){
-    prev.disabled=!isMobile||mobilePage<=0;
-    next.disabled=!isMobile||mobilePage>=mobilePageCount-1;
-    indicator.textContent=isMobile&&mobilePageCount?(`${mobilePage+1} / ${mobilePageCount}`):"";
-    [prev,next,indicator].forEach(el=>el.hidden=!isMobile||mobilePageCount<=1);
-  }
+  const grid=$("grid");
+  grid.classList.remove("book-mode");
+  const pager=document.querySelector(".book-pager");
+  if(pager)pager.hidden=true;
 }
 
 function goPage(delta){
-  if(!window.matchMedia("(max-width:600px)").matches)return;
-  mobilePage=Math.max(0,Math.min(mobilePageCount-1,mobilePage+delta));
-  updateMobilePager();
+  // 카드 목록은 모든 화면에서 한 번에 4열로 표시합니다.
 }
 
 function openModal(card){

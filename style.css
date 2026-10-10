@@ -181,38 +181,38 @@ main{padding:8px 18px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* 코디 조합 미리보기는 보유 여부와 관계없이 컬러로 표시하고, 액세서리만 목록처럼 시계 방향 90도 회전합니다. */
+/* 코디 화면에서도 액세서리의 회전 후 표시 비율을 상의·하의·슈즈와 동일한 세로 카드 비율로 맞춥니다. */
 .coordinate-preview img.coordinate-accessory-image,
 .saved-coordinate-card img.coordinate-accessory-image{
-  width:100%;
+  position:relative;
+  width:138%;
+  max-width:none;
   height:auto;
-  aspect-ratio:1/1.38;
+  min-height:0;
+  aspect-ratio:1.38/1;
+  object-fit:contain;
+  margin-left:-19%;
+  transform:rotate(90deg);
+}
+.coordinate-picker-current img.coordinate-accessory-thumb{
+  width:50px;
+  height:36px;
   object-fit:contain;
   transform:rotate(90deg);
 }
-.coordinate-picker-current img.coordinate-accessory-thumb,
 .coordinate-option img.coordinate-accessory-thumb{
+  width:64px;
+  height:46px;
+  object-fit:contain;
   transform:rotate(90deg);
 }
-.saved-coordinate-title{
-  display:block;
-  width:100%;
-  border:0;
-  padding:0;
-  margin:0 0 10px;
-  background:transparent;
-  color:var(--cover-ink);
-  font-family:var(--display);
-  font-size:18px;
-  text-align:left;
-  cursor:pointer;
-  overflow-wrap:anywhere;
-}
-.saved-coordinate-title small{
-  display:block;
-  margin-top:4px;
-  color:var(--ink-soft);
-  font-family:var(--body);
-  font-size:11px;
-  font-weight:400;
+@media(max-width:600px){
+  .coordinate-picker-current img.coordinate-accessory-thumb{
+    width:42px;
+    height:30px;
+  }
+  .coordinate-option img.coordinate-accessory-thumb{
+    width:52px;
+    height:38px;
+  }
 }

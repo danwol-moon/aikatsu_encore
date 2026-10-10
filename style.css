@@ -34,8 +34,16 @@ main{padding:8px 18px}
 .card:hover{transform:translateY(-3px);box-shadow:0 9px 24px rgba(177,83,119,.18)}
 .card-image{position:relative;aspect-ratio:1/1.38;background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .unowned-card .card-image>img{filter:grayscale(1)}
-.card-heart{position:absolute;left:5px;top:5px;z-index:2;width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:#b34e73;font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 5px rgba(0,0,0,.14);padding:0}
+.card-heart{position:absolute;left:5px;top:5px;z-index:2;width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:#b34e73;font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 5px rgba(0,0,0,.14);padding:0}
 .card-heart.active{color:#e52f70}
+.detail-title-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:10px;text-align:center}
+.detail-title-text{min-width:0}
+.detail-wishlist-heart{width:42px;height:42px;border:1px solid var(--pocket-edge);border-radius:50%;background:#fff;color:#b34e73;font-size:29px;line-height:1;cursor:pointer;box-shadow:var(--shadow)}
+.detail-wishlist-heart.active{color:#e52f70;background:#fde8ef;border-color:#efb7ca}
+.owned-stepper{display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;border:1px solid var(--pocket-edge);border-radius:999px;padding:4px;background:#fff;color:var(--cover-ink);font-size:14px}
+.owned-stepper button{width:30px;height:30px;border:0;border-radius:50%;background:var(--chip);color:var(--cover-ink);font-size:20px;line-height:1;cursor:pointer}
+.owned-stepper button:disabled{opacity:.35;cursor:default}
+.owned-stepper span{min-width:38px;font-family:var(--display)}
 .owned-quantity{position:absolute;right:5px;bottom:5px;z-index:2;background:rgba(255,255,255,.94);color:#9d345b;border:1px solid #f0b7ca;border-radius:999px;padding:3px 7px;font-family:var(--display);font-size:13px;line-height:1.2;box-shadow:0 1px 4px rgba(0,0,0,.12)}
 .card-quick-actions{display:flex;gap:4px;margin-top:5px}
 .card-quick-actions button{min-width:0;flex:1;border:1px solid var(--pocket-edge);border-radius:8px;background:#fff;color:var(--cover-ink);padding:5px 2px;font-size:11px;line-height:1.25;cursor:pointer;white-space:nowrap}
@@ -66,8 +74,8 @@ main{padding:8px 18px}
 .modal-card-nav{display:flex;justify-content:space-between;gap:12px;margin:18px 0 8px}
 .modal-card-nav button:disabled{opacity:.35;cursor:default}
 .detail-images{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:10px auto 20px}
-.modal-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:18px}
-.modal-actions button{min-width:150px;font-family:var(--display);font-size:15px}
+.modal-actions{position:sticky;bottom:-24px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:18px -24px -24px;padding:12px 20px max(12px,env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid var(--line);z-index:3}
+.modal-actions button{min-width:150px;font-family:var(--display);font-size:15px;flex:1;max-width:260px}
 .detail-pocket{background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .detail-pocket img{width:100%;height:auto;display:block;object-fit:contain}
 /* 상세 화면의 앞면·뒷면은 원본 이미지 방향을 유지합니다. */
@@ -87,7 +95,7 @@ main{padding:8px 18px}
   .collection-tools{align-items:flex-start;flex-direction:column;gap:8px}
   .collection-count{font-size:13px}
   .collection-tools button{font-size:12px;padding:7px 11px}
-  .card-heart{left:2px;top:2px;width:22px;height:22px;font-size:17px}
+  .card-heart{left:2px;top:2px;width:29px;height:29px;font-size:22px}
   .owned-quantity{right:2px;bottom:2px;font-size:9px;padding:2px 4px}
   .card-quick-actions{gap:2px;margin-top:3px}
   .card-quick-actions button{font-size:8px;padding:4px 0;border-radius:5px}
@@ -99,7 +107,14 @@ main{padding:8px 18px}
   .card-id{font-size:8px;padding:1px 0 2px}
   .book-pager{display:none!important}
   .modal-dialog{width:96vw;margin:2vh auto;padding:16px;border-radius:18px}
-  .detail-images{gap:8px}.name-ko{font-size:21px}.name-ja{font-size:13px}.info{font-size:12px}.gap{width:10px}
+  .detail-images{gap:8px}.name-ko{font-size:18px}.name-ja{font-size:12px}.info{font-size:12px}.gap{width:10px}
+  .detail-title-row{grid-template-columns:32px minmax(0,1fr) auto;gap:5px}
+  .detail-wishlist-heart{width:31px;height:31px;font-size:22px}
+  .owned-stepper{gap:3px;padding:3px;font-size:11px}
+  .owned-stepper button{width:24px;height:24px;font-size:17px}
+  .owned-stepper span{min-width:28px}
+  .modal-actions{bottom:-16px;margin:14px -16px -16px;padding:9px 12px max(9px,env(safe-area-inset-bottom));gap:7px}
+  .modal-actions button{min-width:0;font-size:12px;padding:9px 8px}
   .modal-card-nav button{font-size:12px;padding:7px 10px}
   .modal-actions button{min-width:0;flex:1;font-size:12px;padding:9px 8px}
 }

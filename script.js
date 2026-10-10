@@ -229,9 +229,10 @@ function toggleWishlist(card){
     populateModal(visibleCards[index]);
   }
 }
-function addOwnedCopy(card){
+function changeOwnedCount(card,delta){
   const key=cardKey(card);
-  ownedCounts.set(key,ownedCount(card)+1);
+  const next=Math.max(0,ownedCount(card)+delta);
+  if(next===0)ownedCounts.delete(key);else ownedCounts.set(key,next);
   saveOwnedCounts();
   updateCollectionCount();
   const wasModalOpen=!$("modal").hidden;
@@ -240,6 +241,17 @@ function addOwnedCopy(card){
     const index=visibleCards.findIndex(item=>cardKey(item)===key);
     if(index>=0){currentModalIndex=index;populateModal(visibleCards[index]);}
   }
+}
+function addOwnedCopy(card){changeOwnedCount(card,1);}
+function setOwnedCount(card,count){
+  const key=cardKey(card);
+  const next=Math.max(0,Number(count)||0);
+  if(next===0)ownedCounts.delete(key);else ownedCounts.set(key,next);
+  saveOwnedCounts();
+  updateCollectionCount();
+  render();
+  const index=visibleCards.findIndex(item=>cardKey(item)===key);
+  if(index>=0){currentModalIndex=index;populateModal(visibleCards[index]);}
 }
 
 function updateMobilePager(){
@@ -268,16 +280,21 @@ function populateModal(card){
   $("detailBack").classList.remove("accessory-detail");
   $("detailKo").textContent=card.nameKo||"";
   $("detailJa").textContent=card.nameJa||"";
+  $("detailWishlistHeart").textContent=isWishlisted(card)?"♥":"♡";
+  $("detailWishlistHeart").classList.toggle("active",isWishlisted(card));
+  $("detailWishlistHeart").setAttribute("aria-pressed",String(isWishlisted(card)));
+  $("ownedCountValue").textContent=String(ownedCount(card));
+  $("ownedMinus").disabled=ownedCount(card)<=0;
   $("detailId").textContent=card.id||"";
   $("detailGrade").textContent=card.grade||"";
   $("detailType").textContent=card.type||"";
   $("detailCategory").textContent=card.category||"";
   $("detailSeason").textContent=seasonForId(card.id);
   const heart=isWishlisted(card), has=isOwned(card);
-  $("wishlistToggle").textContent=heart?"♥ 위시리스트 등록됨":"♡ 위시리스트";
+  $("wishlistToggle").textContent=heart?"♥ 위시리스트 등록됨":"♡ 위시리스트 체크";
   $("wishlistToggle").classList.toggle("active",heart);
   $("wishlistToggle").setAttribute("aria-pressed",String(heart));
-  $("ownedToggle").textContent=`＋ 보유 체크 (현재 X${ownedCount(card)})`;
+  $("ownedToggle").textContent="＋ 보유 체크";
   $("ownedToggle").classList.toggle("active",has);
   $("ownedToggle").setAttribute("aria-pressed","false");
   $("prevCard").disabled=currentModalIndex<=0;
@@ -310,8 +327,17 @@ $("nextCard").addEventListener("click",()=>moveModalCard(1));
 $("wishlistToggle").addEventListener("click",()=>{
   if(currentModalIndex>=0&&visibleCards[currentModalIndex])toggleWishlist(visibleCards[currentModalIndex]);
 });
+$("detailWishlistHeart").addEventListener("click",()=>{
+  if(currentModalIndex>=0&&visibleCards[currentModalIndex])toggleWishlist(visibleCards[currentModalIndex]);
+});
 $("ownedToggle").addEventListener("click",()=>{
   if(currentModalIndex>=0&&visibleCards[currentModalIndex])addOwnedCopy(visibleCards[currentModalIndex]);
+});
+$("ownedMinus").addEventListener("click",()=>{
+  if(currentModalIndex>=0&&visibleCards[currentModalIndex])changeOwnedCount(visibleCards[currentModalIndex],-1);
+});
+$("ownedPlus").addEventListener("click",()=>{
+  if(currentModalIndex>=0&&visibleCards[currentModalIndex])changeOwnedCount(visibleCards[currentModalIndex],1);
 });
 $("wishlistOnly").addEventListener("click",()=>{
   wishlistOnly=!wishlistOnly;

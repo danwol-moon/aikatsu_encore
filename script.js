@@ -184,11 +184,11 @@ function buildCoordinateOptions(){
         const option=document.createElement("button");
         option.type="button";
         option.className="coordinate-option";
-        option.innerHTML=`<img src="${esc(card.front)}" alt="" loading="lazy">
+        option.innerHTML=`<img class="${isAccessory(card)?"coordinate-accessory-thumb":""}" src="${esc(card.front)}" alt="" loading="lazy">
           <span class="coordinate-option-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
         option.addEventListener("click",()=>{
           slot.selected=cardKey(card);
-          $(slot.picker).innerHTML=`<span class="coordinate-picker-current"><img src="${esc(card.front)}" alt="">${esc(card.nameKo||card.nameJa||"이름 없음")}</span><span>⌄</span>`;
+          $(slot.picker).innerHTML=`<span class="coordinate-picker-current"><img class="${isAccessory(card)?"coordinate-accessory-thumb":""}" src="${esc(card.front)}" alt="">${esc(card.nameKo||card.nameJa||"이름 없음")}</span><span>⌄</span>`;
           $(slot.picker).setAttribute("aria-expanded","false");
           list.hidden=true;
           renderCoordinatePreview(slot);
@@ -245,9 +245,21 @@ function renderSavedCoordinates(){
   savedCoordinates.forEach((outfit,index)=>{
     const article=document.createElement("article");
     article.className="saved-coordinate";
-    const title=document.createElement("div");
+    const title=document.createElement("button");
+    title.type="button";
     title.className="saved-coordinate-title";
-    title.textContent=outfit.name;
+    const ownedSlots=outfit.ids.filter(id=>{const card=cards.find(item=>cardKey(item)===String(id));return card&&isOwned(card);}).length;
+    const chosenSlots=outfit.ids.filter(Boolean).length;
+    title.innerHTML=`${esc(outfit.name||("코디 "+(index+1)))}<small>${ownedSlots}/${chosenSlots}장 보유 · 눌러서 이름 수정</small>`;
+    title.addEventListener("click",()=>{
+      const next=prompt("코디 이름을 변경해 주세요.",outfit.name||("코디 "+(index+1)));
+      if(next===null)return;
+      const trimmed=next.trim();
+      if(!trimmed){alert("코디 이름은 비워 둘 수 없어요. 기본 이름을 사용하려면 '코디 "+(index+1)+"'을 입력해 주세요.");return;}
+      outfit.name=trimmed;
+      persistSavedCoordinates();
+      renderSavedCoordinates();
+    });
     const cardsRow=document.createElement("div");
     cardsRow.className="saved-coordinate-cards";
     outfit.ids.forEach((id,i)=>{
@@ -255,7 +267,7 @@ function renderSavedCoordinates(){
       const item=document.createElement("div");
       item.className="saved-coordinate-card";
       if(card){
-        item.innerHTML=`<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="${isOwned(card)?"":"unowned-image"}"><span>${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
+        item.innerHTML=`<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="${(isOwned(card)?"":"unowned-image")+(isAccessory(card)?" coordinate-accessory-image":"")}"><span>${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
       }else item.innerHTML='<span>선택 없음</span>';
       cardsRow.appendChild(item);
     });
@@ -505,11 +517,9 @@ $("coordinateTab").addEventListener("click",()=>setView("coordinate"));
 $("saveCoordinate").addEventListener("click",()=>{
   const ids=currentCoordinateIds();
   if(!ids.some(Boolean)){alert("저장할 카드를 먼저 선택해 주세요.");return;}
-  const name=prompt("저장할 코디 이름을 입력해 주세요.");
-  if(name===null)return;
-  const trimmed=name.trim();
-  if(!trimmed){alert("코디 이름을 입력해 주세요.");return;}
-  savedCoordinates.unshift({name:trimmed,ids,createdAt:Date.now()});
+  const usedNumbers=savedCoordinates.map(item=>String(item.name||"").match(/^코디\s+(\d+)$/)).filter(Boolean).map(match=>Number(match[1]));
+  const nextNumber=usedNumbers.length?Math.max(...usedNumbers)+1:1;
+  savedCoordinates.unshift({name:"코디 "+nextNumber,ids,createdAt:Date.now()});
   persistSavedCoordinates();renderSavedCoordinates();
 });
 

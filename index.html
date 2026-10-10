@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=hide-incomplete-cards-20261010">
+<link rel="stylesheet" href="style.css?v=collection-wishlist-20261010">
 </head>
 <body>
 <div class="wrap">
@@ -25,6 +25,11 @@
       <select id="category"><option value="">카테고리 전체</option></select>
       <select id="type"><option value="">타입 전체</option></select>
       <select id="grade"><option value="">등급 전체</option></select>
+      <select id="season"><option value="">탄 전체</option></select>
+    </div>
+    <div class="collection-tools">
+      <div id="collectionCount" class="collection-count">보유 카드 0장 · 전체 0장</div>
+      <button id="wishlistOnly" type="button" aria-pressed="false">♡ 위시리스트만 보기</button>
     </div>
   </nav>
   <main>
@@ -43,6 +48,10 @@
   <div class="modal-backdrop"></div>
   <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="카드 상세">
     <button id="modalClose" class="modal-close" aria-label="닫기">×</button>
+    <div class="modal-card-nav">
+      <button id="prevCard" type="button" aria-label="이전 카드">‹ 이전 카드</button>
+      <button id="nextCard" type="button" aria-label="다음 카드">다음 카드 ›</button>
+    </div>
     <div class="detail-images">
       <div class="detail-pocket"><img id="detailFront" alt="앞면"></div>
       <div class="detail-pocket"><img id="detailBack" alt="뒷면"></div>
@@ -55,9 +64,14 @@
       <div><span>ID</span> : <b id="detailId"></b><span class="gap"></span><span>등급</span> : <b id="detailGrade"></b></div>
       <div><span>타입</span> : <b id="detailType"></b></div>
       <div><span>카테고리</span> : <b id="detailCategory"></b></div>
+      <div><span>구분</span> : <b id="detailSeason"></b></div>
+    </div>
+    <div class="modal-actions">
+      <button id="wishlistToggle" type="button" aria-pressed="false">♡ 위시리스트</button>
+      <button id="ownedToggle" type="button" aria-pressed="false">□ 보유 카드로 표시</button>
     </div>
   </div>
 </div>
-<script src="script.js?v=type-order-cute-fix-20261010"></script>
+<script src="script.js?v=collection-wishlist-20261010"></script>
 </body>
 </html>

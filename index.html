@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=center-detail-title-20261010">
+<link rel="stylesheet" href="style.css?v=owned-filter-buttons-20261010">
 </head>
 <body>
 <div class="wrap">
@@ -29,7 +29,11 @@
     </div>
     <div class="collection-tools">
       <div id="collectionCount" class="collection-count">보유 카드 0장 · 전체 0장</div>
-      <button id="wishlistOnly" type="button" aria-pressed="false">♡ 위시리스트만 보기</button>
+      <div class="collection-filter-buttons">
+        <button id="wishlistOnly" type="button" aria-pressed="false">♡ 위시리스트만 보기</button>
+        <button id="ownedOnly" type="button" aria-pressed="false">보유 중인 카드</button>
+        <button id="unownedOnly" type="button" aria-pressed="false">미보유 중인 카드</button>
+      </div>
     </div>
   </nav>
   <main>
@@ -86,6 +90,6 @@
     <button id="pageOwnedMode" type="button" aria-pressed="false">＋ 보유 체크</button>
   </div>
 </div>
-<script src="script.js?v=remove-modal-actions-20261010"></script>
+<script src="script.js?v=owned-filter-buttons-20261010"></script>
 </body>
 </html>

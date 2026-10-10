@@ -181,18 +181,47 @@ main{padding:8px 18px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* 코디 화면에서도 액세서리의 회전 후 표시 비율을 상의·하의·슈즈와 동일한 세로 카드 비율로 맞춥니다. */
-.coordinate-preview img.coordinate-accessory-image,
-.saved-coordinate-card img.coordinate-accessory-image{
+/* 액세서리는 회전하되 바깥 프레임은 다른 카드와 동일한 크기·비율·위치로 유지합니다. */
+.coordinate-image-frame,
+.saved-coordinate-image-frame{
   position:relative;
+  width:100%;
+  max-width:220px;
+  aspect-ratio:1/1.38;
+  margin:0 auto;
+  overflow:hidden;
+  border:1px solid var(--pocket-edge);
+  border-radius:10px;
+  background:var(--pocket);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.coordinate-preview .coordinate-image-frame{
+  min-height:260px;
+}
+.coordinate-preview .coordinate-accessory-frame img.coordinate-accessory-image,
+.saved-coordinate-image-frame img.coordinate-accessory-image{
+  display:block;
+  flex:none;
   width:138%;
   max-width:none;
-  height:auto;
+  height:72.46%;
   min-height:0;
-  aspect-ratio:1.38/1;
+  aspect-ratio:auto;
   object-fit:contain;
-  margin-left:-19%;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  margin:0;
   transform:rotate(90deg);
+  transform-origin:center center;
+}
+.saved-coordinate-image-frame{
+  max-width:none;
+  margin:0 0 5px;
+  border:0;
+  border-radius:6px;
 }
 .coordinate-picker-current img.coordinate-accessory-thumb{
   width:50px;
@@ -206,7 +235,22 @@ main{padding:8px 18px}
   object-fit:contain;
   transform:rotate(90deg);
 }
+/* 선택 버튼을 누르면 옵션이 아래 콘텐츠를 밀어내지 않고 펼쳐진 선택 패널처럼 표시됩니다. */
+.coordinate-slot{position:relative}
+.coordinate-options{
+  position:absolute;
+  left:8px;
+  right:8px;
+  top:calc(100% - 48px);
+  max-height:330px;
+  overflow:auto;
+  z-index:20;
+  margin-top:0;
+  background:var(--paper);
+  box-shadow:0 12px 28px rgba(74,38,52,.22);
+}
 @media(max-width:600px){
+  .coordinate-preview .coordinate-image-frame{min-height:220px}
   .coordinate-picker-current img.coordinate-accessory-thumb{
     width:42px;
     height:30px;
@@ -214,5 +258,11 @@ main{padding:8px 18px}
   .coordinate-option img.coordinate-accessory-thumb{
     width:52px;
     height:38px;
+  }
+  .coordinate-options{
+    left:5px;
+    right:5px;
+    top:calc(100% - 44px);
+    max-height:280px;
   }
 }

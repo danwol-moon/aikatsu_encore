@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=coordinate-mode-20261010">
+<link rel="stylesheet" href="style.css?v=coordinate-saved-looks-20261010">
 </head>
 <body>
 <div class="wrap">
@@ -48,25 +48,37 @@
     <div class="coordinate-slots">
       <article class="coordinate-slot">
         <label for="coordinateTop">상의</label>
-        <select id="coordinateTop"><option value="">상의 선택</option></select>
+        <button id="coordinateTopPicker" class="coordinate-picker" type="button" aria-expanded="false">상의 선택 <span>⌄</span></button>
+        <div id="coordinateTopOptions" class="coordinate-options" hidden></div>
         <div id="coordinateTopPreview" class="coordinate-preview empty">상의 카드를 선택해 주세요</div>
       </article>
       <article class="coordinate-slot">
         <label for="coordinateBottom">하의</label>
-        <select id="coordinateBottom"><option value="">하의 선택</option></select>
+        <button id="coordinateBottomPicker" class="coordinate-picker" type="button" aria-expanded="false">하의 선택 <span>⌄</span></button>
+        <div id="coordinateBottomOptions" class="coordinate-options" hidden></div>
         <div id="coordinateBottomPreview" class="coordinate-preview empty">하의 카드를 선택해 주세요</div>
       </article>
       <article class="coordinate-slot">
         <label for="coordinateShoes">슈즈</label>
-        <select id="coordinateShoes"><option value="">슈즈 선택</option></select>
+        <button id="coordinateShoesPicker" class="coordinate-picker" type="button" aria-expanded="false">슈즈 선택 <span>⌄</span></button>
+        <div id="coordinateShoesOptions" class="coordinate-options" hidden></div>
         <div id="coordinateShoesPreview" class="coordinate-preview empty">슈즈 카드를 선택해 주세요</div>
       </article>
       <article class="coordinate-slot">
         <label for="coordinateAccessory">액세서리</label>
-        <select id="coordinateAccessory"><option value="">액세서리 선택</option></select>
+        <button id="coordinateAccessoryPicker" class="coordinate-picker" type="button" aria-expanded="false">액세서리 선택 <span>⌄</span></button>
+        <div id="coordinateAccessoryOptions" class="coordinate-options" hidden></div>
         <div id="coordinateAccessoryPreview" class="coordinate-preview empty">액세서리 카드를 선택해 주세요</div>
       </article>
     </div>
+    <div class="coordinate-save-tools">
+      <button id="saveCoordinate" type="button">코디 저장</button>
+      <span class="coordinate-save-hint">저장한 코디는 이 브라우저에 보관돼요.</span>
+    </div>
+    <section class="saved-coordinates" aria-label="저장한 코디">
+      <h3>저장한 코디</h3>
+      <div id="savedCoordinateList" class="saved-coordinate-list"><p class="saved-coordinate-empty">아직 저장한 코디가 없어요.</p></div>
+    </section>
   </section>
   <main id="mainContent">
     <div id="loading">카드를 불러오는 중...</div>
@@ -122,6 +134,6 @@
     <button id="pageOwnedMode" type="button" aria-pressed="false">＋ 보유 체크</button>
   </div>
 </div>
-<script src="script.js?v=coordinate-mode-20261010"></script>
+<script src="script.js?v=coordinate-saved-looks-20261010"></script>
 </body>
 </html>

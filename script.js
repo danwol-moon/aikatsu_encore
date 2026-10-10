@@ -255,8 +255,7 @@ function renderSavedCoordinates(){
       const next=prompt("코디 이름을 변경해 주세요.",outfit.name||("코디 "+(index+1)));
       if(next===null)return;
       const trimmed=next.trim();
-      if(!trimmed){alert("코디 이름은 비워 둘 수 없어요. 기본 이름을 사용하려면 '코디 "+(index+1)+"'을 입력해 주세요.");return;}
-      outfit.name=trimmed;
+      outfit.name=trimmed||("코디 "+(index+1));
       persistSavedCoordinates();
       renderSavedCoordinates();
     });

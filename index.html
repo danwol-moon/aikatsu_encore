@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=detail-controls-20261010">
+<link rel="stylesheet" href="style.css?v=page-action-modes-20261010">
 </head>
 <body>
 <div class="wrap">
@@ -22,10 +22,10 @@
       <input id="search" type="search" placeholder="ID / 이름 / 카테고리 검색" autocomplete="off">
     </div>
     <div class="filters">
-      <select id="category"><option value="">카테고리 전체</option></select>
-      <select id="type"><option value="">타입 전체</option></select>
-      <select id="grade"><option value="">등급 전체</option></select>
       <select id="season"><option value="">탄 전체</option></select>
+      <select id="category"><option value="">카테고리 전체</option></select>
+      <select id="grade"><option value="">등급 전체</option></select>
+      <select id="type"><option value="">타입 전체</option></select>
     </div>
     <div class="collection-tools">
       <div id="collectionCount" class="collection-count">보유 카드 0장 · 전체 0장</div>
@@ -82,6 +82,14 @@
     </div>
   </div>
 </div>
-<script src="script.js?v=detail-controls-20261010"></script>
+
+<div class="page-action-bar" role="region" aria-label="카드 작업 선택">
+  <div id="pageActionHint" class="page-action-hint">원하는 작업 버튼을 선택한 뒤 카드 이미지 또는 이름을 눌러주세요.</div>
+  <div class="page-action-buttons">
+    <button id="pageWishlistMode" type="button" aria-pressed="false">♡ 위시리스트 체크</button>
+    <button id="pageOwnedMode" type="button" aria-pressed="false">＋ 보유 체크</button>
+  </div>
+</div>
+<script src="script.js?v=page-action-modes-20261010"></script>
 </body>
 </html>

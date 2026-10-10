@@ -19,7 +19,11 @@ button,input,select{font:inherit}
 .search-wrap{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:0 13px;box-shadow:var(--shadow)}
 .search-icon{font-size:25px;line-height:1;color:var(--accent)}
 .search-wrap input{width:100%;height:44px;border:0;outline:0;background:transparent;color:var(--ink);font-size:15px}
-.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:9px}
+.collection-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px}
+.collection-count{font-family:var(--display);font-size:15px;color:var(--cover-ink)}
+.collection-tools button,.modal-actions button,.modal-card-nav button{border:1px solid var(--pocket-edge);border-radius:999px;padding:8px 13px;background:#fff;color:var(--cover-ink);cursor:pointer}
+.collection-tools button.active,.modal-actions button.active{background:var(--accent);border-color:var(--accent);color:#fff}
 .filters select{height:40px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:12px;padding:0 10px;outline:0}
 main{padding:8px 18px}
 #loading,#error{text-align:center;padding:35px 10px;color:var(--ink-soft)}
@@ -28,7 +32,11 @@ main{padding:8px 18px}
 .card-page{display:contents}
 .card{border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:8px;cursor:pointer;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s}
 .card:hover{transform:translateY(-3px);box-shadow:0 9px 24px rgba(177,83,119,.18)}
-.card-image{aspect-ratio:1/1.38;background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-image{position:relative;aspect-ratio:1/1.38;background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.unowned-card .card-image>img{filter:grayscale(1)}
+.card-heart{position:absolute;left:5px;top:5px;z-index:2;width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:#b34e73;font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 5px rgba(0,0,0,.14);padding:0}
+.card-heart.active{color:#e52f70}
+.card-season{position:absolute;right:4px;top:5px;z-index:1;border-radius:999px;background:rgba(255,255,255,.9);color:var(--cover-ink);font-size:10px;padding:3px 6px;line-height:1.2}
 .card-image img{width:100%;height:100%;object-fit:contain;display:block}
 .card-image.accessory-card{position:relative}
 .card-image.accessory-card img{
@@ -51,7 +59,11 @@ main{padding:8px 18px}
 .modal-backdrop{position:absolute;inset:0;background:rgba(74,38,52,.48);backdrop-filter:blur(2px)}
 .modal-dialog{position:relative;width:min(900px,94vw);max-height:92vh;overflow:auto;margin:4vh auto;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 20px 60px rgba(74,38,52,.25);z-index:1}
 .modal-close{position:absolute;right:12px;top:8px;width:40px;height:40px;border:0;background:var(--chip);color:var(--cover-ink);border-radius:50%;font-size:29px;line-height:1;cursor:pointer}
+.modal-card-nav{display:flex;justify-content:space-between;gap:12px;margin:18px 0 8px}
+.modal-card-nav button:disabled{opacity:.35;cursor:default}
 .detail-images{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:10px auto 20px}
+.modal-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:18px}
+.modal-actions button{min-width:150px;font-family:var(--display);font-size:15px}
 .detail-pocket{background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .detail-pocket img{width:100%;height:auto;display:block;object-fit:contain}
 /* 상세 화면의 앞면·뒷면은 원본 이미지 방향을 유지합니다. */
@@ -67,7 +79,12 @@ main{padding:8px 18px}
   .cover{padding:26px 16px 21px;border-radius:0 0 22px 22px}
   .cover h1{font-size:30px}
   .controls{padding:12px 12px 6px}
-  .filters{gap:6px}.filters select{font-size:13px;padding:0 6px}
+  .filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.filters select{font-size:13px;padding:0 6px}
+  .collection-tools{align-items:flex-start;flex-direction:column;gap:8px}
+  .collection-count{font-size:13px}
+  .collection-tools button{font-size:12px;padding:7px 11px}
+  .card-heart{left:2px;top:2px;width:22px;height:22px;font-size:17px}
+  .card-season{right:2px;top:2px;font-size:8px;padding:2px 4px}
   .card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:4px 0}
   .card{width:auto;min-width:0;padding:3px;border-radius:8px}
   .card-image{border-radius:6px}
@@ -76,5 +93,7 @@ main{padding:8px 18px}
   .book-pager{display:none!important}
   .modal-dialog{width:96vw;margin:2vh auto;padding:16px;border-radius:18px}
   .detail-images{gap:8px}.name-ko{font-size:21px}.name-ja{font-size:13px}.info{font-size:12px}.gap{width:10px}
+  .modal-card-nav button{font-size:12px;padding:7px 10px}
+  .modal-actions button{min-width:0;flex:1;font-size:12px;padding:9px 8px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}

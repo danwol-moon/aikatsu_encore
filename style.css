@@ -11,7 +11,7 @@
 html{background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100vh}
 button,input,select{font:inherit}
-.wrap{width:min(1400px,100%);margin:0 auto;padding-bottom:40px}
+.wrap{width:min(1400px,100%);margin:0 auto;padding-bottom:120px}
 .cover{background:linear-gradient(180deg,#ffdce6 0%,var(--cover) 58%,#f9bfd1 100%);padding:34px 20px 26px;text-align:center;border-radius:0 0 28px 28px;box-shadow:0 5px 20px rgba(180,84,120,.12)}
 .cover h1{font-family:var(--display);font-weight:400;font-size:38px;margin:0;color:var(--cover-ink);letter-spacing:.02em}
 .cover .sub{margin:6px 0 0;color:var(--cover-soft);font-size:14px;letter-spacing:.05em}
@@ -45,9 +45,12 @@ main{padding:8px 18px}
 .owned-stepper button:disabled{opacity:.35;cursor:default}
 .owned-stepper span{min-width:38px;font-family:var(--display)}
 .owned-quantity{position:absolute;right:5px;bottom:5px;z-index:2;background:rgba(255,255,255,.94);color:#9d345b;border:1px solid #f0b7ca;border-radius:999px;padding:3px 7px;font-family:var(--display);font-size:13px;line-height:1.2;box-shadow:0 1px 4px rgba(0,0,0,.12)}
-.card-quick-actions{display:flex;gap:4px;margin-top:5px}
-.card-quick-actions button{min-width:0;flex:1;border:1px solid var(--pocket-edge);border-radius:8px;background:#fff;color:var(--cover-ink);padding:5px 2px;font-size:11px;line-height:1.25;cursor:pointer;white-space:nowrap}
-.card-quick-actions .active{background:#fde8ef;color:#d52e70;border-color:#efb7ca}
+.card-image,.card-name{cursor:pointer}
+.page-action-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:8px max(12px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid var(--pocket-edge);box-shadow:0 -5px 20px rgba(177,83,119,.12);backdrop-filter:blur(10px)}
+.page-action-hint{text-align:center;color:var(--ink-soft);font-size:12px;margin-bottom:6px}
+.page-action-buttons{display:flex;gap:8px;width:min(600px,100%);margin:0 auto}
+.page-action-buttons button{flex:1;min-width:0;border:1px solid var(--pocket-edge);border-radius:999px;padding:11px 10px;background:#fff;color:var(--cover-ink);font-family:var(--display);font-size:15px;cursor:pointer}
+.page-action-buttons button.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(224,106,148,.24)}
 .card-season{position:absolute;right:4px;top:5px;z-index:1;border-radius:999px;background:rgba(255,255,255,.9);color:var(--cover-ink);font-size:10px;padding:3px 6px;line-height:1.2}
 .card-image img{width:100%;height:100%;object-fit:contain;display:block}
 .card-image.accessory-card{position:relative}
@@ -97,8 +100,7 @@ main{padding:8px 18px}
   .collection-tools button{font-size:12px;padding:7px 11px}
   .card-heart{left:2px;top:2px;width:29px;height:29px;font-size:22px}
   .owned-quantity{right:2px;bottom:2px;font-size:9px;padding:2px 4px}
-  .card-quick-actions{gap:2px;margin-top:3px}
-  .card-quick-actions button{font-size:8px;padding:4px 0;border-radius:5px}
+  .page-action-bar{padding-top:7px}.page-action-hint{font-size:10px;margin-bottom:5px}.page-action-buttons{gap:6px}.page-action-buttons button{font-size:13px;padding:10px 6px}
   .card-season{right:2px;top:2px;font-size:8px;padding:2px 4px}
   .card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:4px 0}
   .card{width:auto;min-width:0;padding:3px;border-radius:8px}

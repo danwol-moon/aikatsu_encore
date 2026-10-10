@@ -13,17 +13,28 @@ let wishlistOnly=false;
 const $=id=>document.getElementById(id);
 const WISHLIST_KEY="aikatsuEncoreWishlist";
 const OWNED_KEY="aikatsuEncoreOwned";
-function readSet(key){
-  try{return new Set(JSON.parse(localStorage.getItem(key)||"[]").map(String));}
+function readWishlist(){
+  try{return new Set(JSON.parse(localStorage.getItem(WISHLIST_KEY)||"[]").map(String));}
   catch(e){return new Set();}
 }
-let wishlist=readSet(WISHLIST_KEY);
-let owned=readSet(OWNED_KEY);
-function saveSet(key,set){
-  try{localStorage.setItem(key,JSON.stringify([...set]));}catch(e){}
+function readOwnedCounts(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(OWNED_KEY)||"[]");
+    if(Array.isArray(raw))return new Map(raw.map(id=>[String(id),1]));
+    return new Map(Object.entries(raw||{}).map(([id,count])=>[String(id),Math.max(0,Number(count)||0)]).filter(([,count])=>count>0));
+  }catch(e){return new Map();}
+}
+let wishlist=readWishlist();
+let ownedCounts=readOwnedCounts();
+function saveWishlist(){
+  try{localStorage.setItem(WISHLIST_KEY,JSON.stringify([...wishlist]));}catch(e){}
+}
+function saveOwnedCounts(){
+  try{localStorage.setItem(OWNED_KEY,JSON.stringify(Object.fromEntries(ownedCounts)));}catch(e){}
 }
 function cardKey(card){return String(card.id??"").trim();}
-function isOwned(card){return owned.has(cardKey(card));}
+function ownedCount(card){return ownedCounts.get(cardKey(card))||0;}
+function isOwned(card){return ownedCount(card)>0;}
 function isWishlisted(card){return wishlist.has(cardKey(card));}
 function seasonForId(id){
   const value=String(id??"").trim().toUpperCase();
@@ -149,8 +160,9 @@ function filtered(){
 }
 
 function updateCollectionCount(){
-  const count=cards.filter(isOwned).length;
-  $("collectionCount").textContent=`보유 카드 ${count}장 · 전체 ${cards.length}장`;
+  const totalCopies=cards.reduce((sum,card)=>sum+ownedCount(card),0);
+  const kinds=cards.filter(isOwned).length;
+  $("collectionCount").textContent=`보유 ${totalCopies}장 · ${kinds}종 / 전체 ${cards.length}종`;
 }
 function render(){
   const grid=$("grid");
@@ -172,12 +184,26 @@ function render(){
     const heart=isWishlisted(card);
     el.innerHTML=`<div class="card-image${accessory?" accessory-card":""}">
       <img src="${esc(card.front)}" alt="${esc(card.nameKo)}" loading="lazy">
-      <button class="card-heart${heart?" active":""}" type="button" aria-label="${heart?"위시리스트 해제":"위시리스트 추가"}" aria-pressed="${heart}" title="위시리스트">${heart?"♥":"♡"}</button>
+      <button class="card-heart${heart?" active":""}" type="button" aria-label="${heart?"위시리스트 해제":"위시리스트 체크"}" aria-pressed="${heart}" title="위시리스트 체크">${heart?"♥":"♡"}</button>
       <span class="card-season">${esc(seasonForId(card.id))}</span>
-    </div><div class="card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div><div class="card-id">ID : ${esc(card.id)}</div>`;
+      ${ownedCount(card)>0?`<span class="owned-quantity">X${ownedCount(card)}</span>`:""}
+    </div><div class="card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div><div class="card-id">ID : ${esc(card.id)}</div>
+    <div class="card-quick-actions">
+      <button class="quick-wishlist${heart?" active":""}" type="button" aria-pressed="${heart}">${heart?"♥ 위시 등록됨":"♡ 위시리스트 체크"}</button>
+      <button class="quick-owned" type="button">＋ 보유 체크</button>
+    </div>`;
+    const quickWishlist=()=>toggleWishlist(card);
     el.querySelector(".card-heart").addEventListener("click",event=>{
       event.stopPropagation();
-      toggleWishlist(card);
+      quickWishlist();
+    });
+    el.querySelector(".quick-wishlist").addEventListener("click",event=>{
+      event.stopPropagation();
+      quickWishlist();
+    });
+    el.querySelector(".quick-owned").addEventListener("click",event=>{
+      event.stopPropagation();
+      addOwnedCopy(card);
     });
     el.addEventListener("click",()=>openModal(card));
     page.appendChild(el);
@@ -192,7 +218,7 @@ function render(){
 function toggleWishlist(card){
   const key=cardKey(card);
   if(wishlist.has(key))wishlist.delete(key);else wishlist.add(key);
-  saveSet(WISHLIST_KEY,wishlist);
+  saveWishlist();
   updateCollectionCount();
   const wasModalOpen=!$("modal").hidden;
   render();
@@ -203,10 +229,10 @@ function toggleWishlist(card){
     populateModal(visibleCards[index]);
   }
 }
-function toggleOwned(card){
+function addOwnedCopy(card){
   const key=cardKey(card);
-  if(owned.has(key))owned.delete(key);else owned.add(key);
-  saveSet(OWNED_KEY,owned);
+  ownedCounts.set(key,ownedCount(card)+1);
+  saveOwnedCounts();
   updateCollectionCount();
   const wasModalOpen=!$("modal").hidden;
   render();
@@ -251,9 +277,9 @@ function populateModal(card){
   $("wishlistToggle").textContent=heart?"♥ 위시리스트 등록됨":"♡ 위시리스트";
   $("wishlistToggle").classList.toggle("active",heart);
   $("wishlistToggle").setAttribute("aria-pressed",String(heart));
-  $("ownedToggle").textContent=has?"☑ 보유 카드":"□ 미보유 카드";
+  $("ownedToggle").textContent=`＋ 보유 체크 (현재 X${ownedCount(card)})`;
   $("ownedToggle").classList.toggle("active",has);
-  $("ownedToggle").setAttribute("aria-pressed",String(has));
+  $("ownedToggle").setAttribute("aria-pressed","false");
   $("prevCard").disabled=currentModalIndex<=0;
   $("nextCard").disabled=currentModalIndex>=visibleCards.length-1;
 }
@@ -285,7 +311,7 @@ $("wishlistToggle").addEventListener("click",()=>{
   if(currentModalIndex>=0&&visibleCards[currentModalIndex])toggleWishlist(visibleCards[currentModalIndex]);
 });
 $("ownedToggle").addEventListener("click",()=>{
-  if(currentModalIndex>=0&&visibleCards[currentModalIndex])toggleOwned(visibleCards[currentModalIndex]);
+  if(currentModalIndex>=0&&visibleCards[currentModalIndex])addOwnedCopy(visibleCards[currentModalIndex]);
 });
 $("wishlistOnly").addEventListener("click",()=>{
   wishlistOnly=!wishlistOnly;

@@ -8,15 +8,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=owned-filter-buttons-20261010">
+<link rel="stylesheet" href="style.css?v=coordinate-mode-20261010">
 </head>
 <body>
 <div class="wrap">
   <header class="cover">
     <h1>아이카츠 앙코르</h1>
-    <p class="sub">Aikatsu Encore Binder</p>
+    <p class="sub">aikatsu encore</p>
   </header>
-  <nav class="controls" aria-label="카드 검색 및 필터">
+  <div class="view-tabs" role="tablist" aria-label="페이지 선택">
+    <button id="cardListTab" class="view-tab active" type="button" role="tab" aria-selected="true">카드 목록</button>
+    <button id="coordinateTab" class="view-tab" type="button" role="tab" aria-selected="false">코디네이트</button>
+  </div>
+  <nav id="controls" class="controls" aria-label="카드 검색 및 필터">
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
       <input id="search" type="search" placeholder="ID / 이름 / 카테고리 검색" autocomplete="off">
@@ -36,7 +40,35 @@
       </div>
     </div>
   </nav>
-  <main>
+  <section id="coordinateView" class="coordinate-view" hidden aria-label="코디네이트 조합">
+    <div class="coordinate-heading">
+      <h2>코디네이트</h2>
+      <p>상의, 하의, 슈즈, 액세서리를 골라 나만의 코디를 조합해 보세요.</p>
+    </div>
+    <div class="coordinate-slots">
+      <article class="coordinate-slot">
+        <label for="coordinateTop">상의</label>
+        <select id="coordinateTop"><option value="">상의 선택</option></select>
+        <div id="coordinateTopPreview" class="coordinate-preview empty">상의 카드를 선택해 주세요</div>
+      </article>
+      <article class="coordinate-slot">
+        <label for="coordinateBottom">하의</label>
+        <select id="coordinateBottom"><option value="">하의 선택</option></select>
+        <div id="coordinateBottomPreview" class="coordinate-preview empty">하의 카드를 선택해 주세요</div>
+      </article>
+      <article class="coordinate-slot">
+        <label for="coordinateShoes">슈즈</label>
+        <select id="coordinateShoes"><option value="">슈즈 선택</option></select>
+        <div id="coordinateShoesPreview" class="coordinate-preview empty">슈즈 카드를 선택해 주세요</div>
+      </article>
+      <article class="coordinate-slot">
+        <label for="coordinateAccessory">액세서리</label>
+        <select id="coordinateAccessory"><option value="">액세서리 선택</option></select>
+        <div id="coordinateAccessoryPreview" class="coordinate-preview empty">액세서리 카드를 선택해 주세요</div>
+      </article>
+    </div>
+  </section>
+  <main id="mainContent">
     <div id="loading">카드를 불러오는 중...</div>
     <div id="error" hidden></div>
     <section id="grid" class="card-grid" aria-live="polite"></section>
@@ -83,13 +115,13 @@
 </div>
 </div>
 
-<div class="page-action-bar" role="region" aria-label="카드 작업 선택">
+<div id="pageActionBar" class="page-action-bar" role="region" aria-label="카드 작업 선택">
   <div id="pageActionHint" class="page-action-hint">원하는 작업 버튼을 선택한 뒤 카드 이미지 또는 이름을 눌러주세요.</div>
   <div class="page-action-buttons">
     <button id="pageWishlistMode" type="button" aria-pressed="false">♡ 위시리스트 체크</button>
     <button id="pageOwnedMode" type="button" aria-pressed="false">＋ 보유 체크</button>
   </div>
 </div>
-<script src="script.js?v=owned-filter-buttons-20261010"></script>
+<script src="script.js?v=coordinate-mode-20261010"></script>
 </body>
 </html>

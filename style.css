@@ -22,6 +22,7 @@ button,input,select{font:inherit}
 .filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:9px}
 .collection-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px}
 .collection-count{font-family:var(--display);font-size:15px;color:var(--cover-ink)}
+.collection-filter-buttons{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px}
 .collection-tools button,.modal-actions button,.modal-card-nav button{border:1px solid var(--pocket-edge);border-radius:999px;padding:8px 13px;background:#fff;color:var(--cover-ink);cursor:pointer}
 .collection-tools button.active,.modal-actions button.active{background:var(--accent);border-color:var(--accent);color:#fff}
 .filters select{height:40px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:12px;padding:0 10px;outline:0}
@@ -97,7 +98,8 @@ main{padding:8px 18px}
   .filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.filters select{font-size:13px;padding:0 6px}
   .collection-tools{align-items:flex-start;flex-direction:column;gap:8px}
   .collection-count{font-size:13px}
-  .collection-tools button{font-size:12px;padding:7px 11px}
+  .collection-filter-buttons{width:100%;justify-content:flex-start;gap:6px}
+  .collection-tools button{font-size:12px;padding:7px 10px}
   .card-heart{left:2px;top:2px;width:29px;height:29px;font-size:22px}
   .owned-quantity{right:3px;bottom:3px;font-size:12px;padding:3px 6px;min-width:30px}
   .page-action-bar{padding-top:7px}.page-action-hint{font-size:10px;margin-bottom:5px}.page-action-buttons{gap:6px}.page-action-buttons button{font-size:13px;padding:10px 6px}

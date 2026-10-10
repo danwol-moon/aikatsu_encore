@@ -10,6 +10,7 @@ let touchStartY=0;
 let visibleCards=[];
 let currentModalIndex=-1;
 let wishlistOnly=false;
+let selectionMode=null; // null, 'wishlist', or 'owned'
 const $=id=>document.getElementById(id);
 const WISHLIST_KEY="aikatsuEncoreWishlist";
 const OWNED_KEY="aikatsuEncoreOwned";
@@ -188,24 +189,22 @@ function render(){
       <span class="card-season">${esc(seasonForId(card.id))}</span>
       ${ownedCount(card)>0?`<span class="owned-quantity">X${ownedCount(card)}</span>`:""}
     </div><div class="card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div><div class="card-id">ID : ${esc(card.id)}</div>
-    <div class="card-quick-actions">
-      <button class="quick-wishlist${heart?" active":""}" type="button" aria-pressed="${heart}">${heart?"♥ 위시 등록됨":"♡ 위시리스트 체크"}</button>
-      <button class="quick-owned" type="button">＋ 보유 체크</button>
-    </div>`;
+`;
     const quickWishlist=()=>toggleWishlist(card);
     el.querySelector(".card-heart").addEventListener("click",event=>{
       event.stopPropagation();
       quickWishlist();
     });
-    el.querySelector(".quick-wishlist").addEventListener("click",event=>{
-      event.stopPropagation();
-      quickWishlist();
+    el.addEventListener("click",event=>{
+      if(event.target.closest(".card-heart"))return;
+      if(selectionMode && event.target.closest(".card-image, .card-name")){
+        event.stopPropagation();
+        if(selectionMode==="wishlist")toggleWishlist(card);
+        else if(selectionMode==="owned")addOwnedCopy(card);
+        return;
+      }
+      openModal(card);
     });
-    el.querySelector(".quick-owned").addEventListener("click",event=>{
-      event.stopPropagation();
-      addOwnedCopy(card);
-    });
-    el.addEventListener("click",()=>openModal(card));
     page.appendChild(el);
   });
 
@@ -214,6 +213,27 @@ function render(){
   $("wishlistOnly").classList.toggle("active",wishlistOnly);
   $("wishlistOnly").setAttribute("aria-pressed",String(wishlistOnly));
   $("wishlistOnly").textContent=wishlistOnly?"♥ 위시리스트 보기 중":"♡ 위시리스트만 보기";
+  updateSelectionModeUI();
+}
+function setSelectionMode(mode){
+  selectionMode=selectionMode===mode?null:mode;
+  updateSelectionModeUI();
+}
+function updateSelectionModeUI(){
+  const wishlistButton=$("pageWishlistMode");
+  const ownedButton=$("pageOwnedMode");
+  if(!wishlistButton||!ownedButton)return;
+  wishlistButton.classList.toggle("active",selectionMode==="wishlist");
+  ownedButton.classList.toggle("active",selectionMode==="owned");
+  wishlistButton.setAttribute("aria-pressed",String(selectionMode==="wishlist"));
+  ownedButton.setAttribute("aria-pressed",String(selectionMode==="owned"));
+  wishlistButton.textContent=selectionMode==="wishlist"?"♥ 위시리스트 체크 중":"♡ 위시리스트 체크";
+  ownedButton.textContent=selectionMode==="owned"?"＋ 보유 체크 중":"＋ 보유 체크";
+  $("pageActionHint").textContent=selectionMode==="wishlist"
+    ?"카드 이미지 또는 이름을 눌러 위시리스트를 등록/해제하세요."
+    :selectionMode==="owned"
+      ?"카드 이미지 또는 이름을 눌러 보유 장수를 늘리세요."
+      :"원하는 작업 버튼을 선택한 뒤 카드 이미지 또는 이름을 눌러주세요.";
 }
 function toggleWishlist(card){
   const key=cardKey(card);
@@ -343,6 +363,8 @@ $("wishlistOnly").addEventListener("click",()=>{
   wishlistOnly=!wishlistOnly;
   render();
 });
+$("pageWishlistMode").addEventListener("click",()=>setSelectionMode("wishlist"));
+$("pageOwnedMode").addEventListener("click",()=>setSelectionMode("owned"));
 
 const grid=$("grid");
 grid.addEventListener("touchstart",e=>{

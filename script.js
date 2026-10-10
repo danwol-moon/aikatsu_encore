@@ -284,6 +284,7 @@ function setView(view){
   $("cardListTab").setAttribute("aria-selected",String(!isCoordinate));
   $("coordinateTab").classList.toggle("active",isCoordinate);
   $("coordinateTab").setAttribute("aria-selected",String(isCoordinate));
+  if(isCoordinate)renderSavedCoordinates();
 }
 
 function filtered(){

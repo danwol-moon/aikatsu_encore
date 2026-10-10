@@ -153,12 +153,22 @@ function buildFilters(){
   });
 }
 
+
+const COORDINATE_KEY="aikatsuEncoreSavedCoordinates";
 const coordinateSlots=[
-  {select:"coordinateTop",preview:"coordinateTopPreview",category:"상의",placeholder:"상의 카드를 선택해 주세요"},
-  {select:"coordinateBottom",preview:"coordinateBottomPreview",category:"하의",placeholder:"하의 카드를 선택해 주세요"},
-  {select:"coordinateShoes",preview:"coordinateShoesPreview",category:"슈즈",placeholder:"슈즈 카드를 선택해 주세요"},
-  {select:"coordinateAccessory",preview:"coordinateAccessoryPreview",category:"액세서리",placeholder:"액세서리 카드를 선택해 주세요"}
+  {select:"coordinateTop",picker:"coordinateTopPicker",options:"coordinateTopOptions",preview:"coordinateTopPreview",category:"상의",placeholder:"상의 카드를 선택해 주세요"},
+  {select:"coordinateBottom",picker:"coordinateBottomPicker",options:"coordinateBottomOptions",preview:"coordinateBottomPreview",category:"하의",placeholder:"하의 카드를 선택해 주세요"},
+  {select:"coordinateShoes",picker:"coordinateShoesPicker",options:"coordinateShoesOptions",preview:"coordinateShoesPreview",category:"슈즈",placeholder:"슈즈 카드를 선택해 주세요"},
+  {select:"coordinateAccessory",picker:"coordinateAccessoryPicker",options:"coordinateAccessoryOptions",preview:"coordinateAccessoryPreview",category:"액세서리",placeholder:"액세서리 카드를 선택해 주세요"}
 ];
+let savedCoordinates=readSavedCoordinates();
+function readSavedCoordinates(){
+  try{const data=JSON.parse(localStorage.getItem(COORDINATE_KEY)||"[]");return Array.isArray(data)?data:[];}
+  catch(e){return [];}
+}
+function persistSavedCoordinates(){
+  try{localStorage.setItem(COORDINATE_KEY,JSON.stringify(savedCoordinates));}catch(e){}
+}
 function coordinateCategoryMatches(card,category){
   const actual=normalize(card.category);
   if(category==="액세서리")return actual==="액세서리"||actual==="악세서리";
@@ -166,33 +176,103 @@ function coordinateCategoryMatches(card,category){
 }
 function buildCoordinateOptions(){
   coordinateSlots.forEach(slot=>{
-    const select=$(slot.select);
-    const first=select.options[0];
-    select.innerHTML="";
-    select.appendChild(first);
+    const list=$(slot.options);
+    list.innerHTML="";
     cards.filter(card=>coordinateCategoryMatches(card,slot.category))
       .sort((a,b)=>String(a.id).localeCompare(String(b.id),"ko",{numeric:true}))
       .forEach(card=>{
-        const option=document.createElement("option");
-        option.value=cardKey(card);
-        option.textContent=(card.nameKo||card.nameJa||"이름 없음")+" · "+card.id;
-        select.appendChild(option);
+        const option=document.createElement("button");
+        option.type="button";
+        option.className="coordinate-option";
+        option.innerHTML=`<img src="${esc(card.front)}" alt="" loading="lazy">
+          <span class="coordinate-option-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
+        option.addEventListener("click",()=>{
+          slot.selected=cardKey(card);
+          $(slot.picker).innerHTML=`<span class="coordinate-picker-current"><img src="${esc(card.front)}" alt="">${esc(card.nameKo||card.nameJa||"이름 없음")}</span><span>⌄</span>`;
+          $(slot.picker).setAttribute("aria-expanded","false");
+          list.hidden=true;
+          renderCoordinatePreview(slot);
+        });
+        list.appendChild(option);
       });
-    select.addEventListener("change",()=>renderCoordinatePreview(slot));
+    $(slot.picker).addEventListener("click",()=>{
+      const open=$(slot.picker).getAttribute("aria-expanded")==="true";
+      coordinateSlots.forEach(other=>{
+        $(other.options).hidden=true;
+        $(other.picker).setAttribute("aria-expanded","false");
+      });
+      list.hidden=open;
+      $(slot.picker).setAttribute("aria-expanded",String(!open));
+    });
   });
+  renderSavedCoordinates();
+}
+function getCoordinateCard(slot){
+  return cards.find(item=>cardKey(item)===String(slot.selected||""))||null;
 }
 function renderCoordinatePreview(slot){
-  const preview=$(slot.preview);
-  const card=cards.find(item=>cardKey(item)===$(slot.select).value);
+  const preview=$(slot.preview),card=getCoordinateCard(slot);
   if(!card){
     preview.className="coordinate-preview empty";
     preview.textContent=slot.placeholder;
+    $(slot.picker).textContent=slot.category+" 선택 ⌄";
     return;
   }
-  preview.className="coordinate-preview";
-  preview.innerHTML=`<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}">
-    <div class="coordinate-card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div>
-    <div class="coordinate-card-id">${esc(card.id)}</div>`;
+  preview.className="coordinate-preview"+(isOwned(card)?" owned":" unowned");
+  preview.innerHTML=`<img class="coordinate-card-image ${isOwned(card)?"":"unowned-image"}" src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}">
+    <div class="coordinate-card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div>`;
+}
+function currentCoordinateIds(){
+  return coordinateSlots.map(slot=>String(slot.selected||""));
+}
+function applyCoordinateIds(ids){
+  coordinateSlots.forEach((slot,index)=>{
+    slot.selected=String(ids?.[index]||"");
+    const card=getCoordinateCard(slot);
+    if(card){
+      $(slot.picker).innerHTML=`<span class="coordinate-picker-current"><img src="${esc(card.front)}" alt="">${esc(card.nameKo||card.nameJa||"이름 없음")}</span><span>⌄</span>`;
+    }else $(slot.picker).textContent=slot.category+" 선택 ⌄";
+    renderCoordinatePreview(slot);
+  });
+}
+function renderSavedCoordinates(){
+  const list=$("savedCoordinateList");
+  list.innerHTML="";
+  if(!savedCoordinates.length){
+    list.innerHTML='<p class="saved-coordinate-empty">아직 저장한 코디가 없어요.</p>';
+    return;
+  }
+  savedCoordinates.forEach((outfit,index)=>{
+    const article=document.createElement("article");
+    article.className="saved-coordinate";
+    const title=document.createElement("div");
+    title.className="saved-coordinate-title";
+    title.textContent=outfit.name;
+    const cardsRow=document.createElement("div");
+    cardsRow.className="saved-coordinate-cards";
+    outfit.ids.forEach((id,i)=>{
+      const card=cards.find(item=>cardKey(item)===String(id));
+      const item=document.createElement("div");
+      item.className="saved-coordinate-card";
+      if(card){
+        item.innerHTML=`<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="${isOwned(card)?"":"unowned-image"}"><span>${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
+      }else item.innerHTML='<span>선택 없음</span>';
+      cardsRow.appendChild(item);
+    });
+    const actions=document.createElement("div");
+    actions.className="saved-coordinate-actions";
+    const load=document.createElement("button");
+    load.type="button";load.textContent="불러오기";
+    load.addEventListener("click",()=>applyCoordinateIds(outfit.ids));
+    const del=document.createElement("button");
+    del.type="button";del.className="delete-coordinate";del.textContent="삭제";
+    del.addEventListener("click",()=>{
+      savedCoordinates.splice(index,1);persistSavedCoordinates();renderSavedCoordinates();
+    });
+    actions.append(load,del);
+    article.append(title,cardsRow,actions);
+    list.appendChild(article);
+  });
 }
 function setView(view){
   const isCoordinate=view==="coordinate";
@@ -421,6 +501,17 @@ $("unownedOnly").addEventListener("click",()=>{
 });
 $("cardListTab").addEventListener("click",()=>setView("list"));
 $("coordinateTab").addEventListener("click",()=>setView("coordinate"));
+$("saveCoordinate").addEventListener("click",()=>{
+  const ids=currentCoordinateIds();
+  if(!ids.some(Boolean)){alert("저장할 카드를 먼저 선택해 주세요.");return;}
+  const name=prompt("저장할 코디 이름을 입력해 주세요.");
+  if(name===null)return;
+  const trimmed=name.trim();
+  if(!trimmed){alert("코디 이름을 입력해 주세요.");return;}
+  savedCoordinates.unshift({name:trimmed,ids,createdAt:Date.now()});
+  persistSavedCoordinates();renderSavedCoordinates();
+});
+
 $("pageWishlistMode").addEventListener("click",()=>setSelectionMode("wishlist"));
 $("pageOwnedMode").addEventListener("click",()=>setSelectionMode("owned"));
 

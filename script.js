@@ -310,13 +310,6 @@ function populateModal(card){
   $("detailType").textContent=card.type||"";
   $("detailCategory").textContent=card.category||"";
   $("detailSeason").textContent=seasonForId(card.id);
-  const heart=isWishlisted(card), has=isOwned(card);
-  $("wishlistToggle").textContent=heart?"♥ 위시리스트 등록됨":"♡ 위시리스트 체크";
-  $("wishlistToggle").classList.toggle("active",heart);
-  $("wishlistToggle").setAttribute("aria-pressed",String(heart));
-  $("ownedToggle").textContent="＋ 보유 체크";
-  $("ownedToggle").classList.toggle("active",has);
-  $("ownedToggle").setAttribute("aria-pressed","false");
   $("prevCard").disabled=currentModalIndex<=0;
   $("nextCard").disabled=currentModalIndex>=visibleCards.length-1;
 }
@@ -344,14 +337,8 @@ $("pagePrev").addEventListener("click",()=>goPage(-1));
 $("pageNext").addEventListener("click",()=>goPage(1));
 $("prevCard").addEventListener("click",()=>moveModalCard(-1));
 $("nextCard").addEventListener("click",()=>moveModalCard(1));
-$("wishlistToggle").addEventListener("click",()=>{
-  if(currentModalIndex>=0&&visibleCards[currentModalIndex])toggleWishlist(visibleCards[currentModalIndex]);
-});
 $("detailWishlistHeart").addEventListener("click",()=>{
   if(currentModalIndex>=0&&visibleCards[currentModalIndex])toggleWishlist(visibleCards[currentModalIndex]);
-});
-$("ownedToggle").addEventListener("click",()=>{
-  if(currentModalIndex>=0&&visibleCards[currentModalIndex])addOwnedCopy(visibleCards[currentModalIndex]);
 });
 $("ownedMinus").addEventListener("click",()=>{
   if(currentModalIndex>=0&&visibleCards[currentModalIndex])changeOwnedCount(visibleCards[currentModalIndex],-1);

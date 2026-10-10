@@ -10,6 +10,7 @@ let touchStartY=0;
 let visibleCards=[];
 let currentModalIndex=-1;
 let wishlistOnly=false;
+let ownedFilter=null; // null, 'owned', or 'unowned'
 let selectionMode=null; // null, 'wishlist', or 'owned'
 const $=id=>document.getElementById(id);
 const WISHLIST_KEY="aikatsuEncoreWishlist";
@@ -156,7 +157,8 @@ function filtered(){
   return cards.filter(x=>
     (!q||[x.id,x.category,x.type,x.grade,x.nameJa,x.nameKo].some(v=>String(v).toLowerCase().includes(q)))&&
     (!cat||x.category===cat)&&(!type||x.type===type)&&(!grade||x.grade===grade)&&
-    (!season||seasonForId(x.id)===season)&&(!wishlistOnly||isWishlisted(x))
+    (!season||seasonForId(x.id)===season)&&(!wishlistOnly||isWishlisted(x))&&
+    (!ownedFilter||(ownedFilter==="owned"?isOwned(x):!isOwned(x)))
   );
 }
 
@@ -213,6 +215,10 @@ function render(){
   $("wishlistOnly").classList.toggle("active",wishlistOnly);
   $("wishlistOnly").setAttribute("aria-pressed",String(wishlistOnly));
   $("wishlistOnly").textContent=wishlistOnly?"♥ 위시리스트 보기 중":"♡ 위시리스트만 보기";
+  $("ownedOnly").classList.toggle("active",ownedFilter==="owned");
+  $("ownedOnly").setAttribute("aria-pressed",String(ownedFilter==="owned"));
+  $("unownedOnly").classList.toggle("active",ownedFilter==="unowned");
+  $("unownedOnly").setAttribute("aria-pressed",String(ownedFilter==="unowned"));
   updateSelectionModeUI();
 }
 function setSelectionMode(mode){
@@ -348,6 +354,14 @@ $("ownedPlus").addEventListener("click",()=>{
 });
 $("wishlistOnly").addEventListener("click",()=>{
   wishlistOnly=!wishlistOnly;
+  render();
+});
+$("ownedOnly").addEventListener("click",()=>{
+  ownedFilter=ownedFilter==="owned"?null:"owned";
+  render();
+});
+$("unownedOnly").addEventListener("click",()=>{
+  ownedFilter=ownedFilter==="unowned"?null:"unowned";
   render();
 });
 $("pageWishlistMode").addEventListener("click",()=>setSelectionMode("wishlist"));

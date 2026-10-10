@@ -219,7 +219,10 @@ function renderCoordinatePreview(slot){
     return;
   }
   preview.className="coordinate-preview";
-  preview.innerHTML=`<img class="coordinate-card-image ${isAccessory(card)?"coordinate-accessory-image":""}" src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}">
+  const accessory=isAccessory(card);
+  preview.innerHTML=`${accessory
+    ? `<div class="coordinate-image-frame coordinate-accessory-frame"><img class="coordinate-card-image coordinate-accessory-image" src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}"></div>`
+    : `<img class="coordinate-card-image" src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}">`}
     <div class="coordinate-card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div>`;
 }
 function currentCoordinateIds(){
@@ -266,7 +269,9 @@ function renderSavedCoordinates(){
       const item=document.createElement("div");
       item.className="saved-coordinate-card";
       if(card){
-        item.innerHTML=`<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="${(isOwned(card)?"":"unowned-image")+(isAccessory(card)?" coordinate-accessory-image":"")}"><span>${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
+        item.innerHTML=`${isAccessory(card)
+          ? `<div class="saved-coordinate-image-frame coordinate-accessory-frame"><img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="coordinate-accessory-image ${isOwned(card)?"":"unowned-image"}"></div>`
+          : `<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="${isOwned(card)?"":"unowned-image"}">`}<span>${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
       }else item.innerHTML='<span>선택 없음</span>';
       cardsRow.appendChild(item);
     });

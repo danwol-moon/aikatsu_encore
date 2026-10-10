@@ -109,6 +109,7 @@ function fillSelect(id,values,order=[]){
 }
 function buildFilters(){
   fillSelect("category",cards.map(x=>x.category),["풀코디","상의","하의","원피스","슈즈","액세서리"]);
+  buildCoordinateOptions();
   // 시트의 실제 표기인 '큐트'와 '큐티'를 같은 항목으로 인식해 지정 순서로 정렬합니다.
   const typeOrder=["큐트","큐티","쿨","섹시","팝"];
   const typeValues=[...new Set(cards.map(x=>String(x.type??"")).filter(v=>v.trim()))];
@@ -151,6 +152,60 @@ function buildFilters(){
     option.value=value;option.textContent=value;seasonSelect.appendChild(option);
   });
 }
+
+const coordinateSlots=[
+  {select:"coordinateTop",preview:"coordinateTopPreview",category:"상의",placeholder:"상의 카드를 선택해 주세요"},
+  {select:"coordinateBottom",preview:"coordinateBottomPreview",category:"하의",placeholder:"하의 카드를 선택해 주세요"},
+  {select:"coordinateShoes",preview:"coordinateShoesPreview",category:"슈즈",placeholder:"슈즈 카드를 선택해 주세요"},
+  {select:"coordinateAccessory",preview:"coordinateAccessoryPreview",category:"액세서리",placeholder:"액세서리 카드를 선택해 주세요"}
+];
+function coordinateCategoryMatches(card,category){
+  const actual=normalize(card.category);
+  if(category==="액세서리")return actual==="액세서리"||actual==="악세서리";
+  return actual===normalize(category);
+}
+function buildCoordinateOptions(){
+  coordinateSlots.forEach(slot=>{
+    const select=$(slot.select);
+    const first=select.options[0];
+    select.innerHTML="";
+    select.appendChild(first);
+    cards.filter(card=>coordinateCategoryMatches(card,slot.category))
+      .sort((a,b)=>String(a.id).localeCompare(String(b.id),"ko",{numeric:true}))
+      .forEach(card=>{
+        const option=document.createElement("option");
+        option.value=cardKey(card);
+        option.textContent=(card.nameKo||card.nameJa||"이름 없음")+" · "+card.id;
+        select.appendChild(option);
+      });
+    select.addEventListener("change",()=>renderCoordinatePreview(slot));
+  });
+}
+function renderCoordinatePreview(slot){
+  const preview=$(slot.preview);
+  const card=cards.find(item=>cardKey(item)===$(slot.select).value);
+  if(!card){
+    preview.className="coordinate-preview empty";
+    preview.textContent=slot.placeholder;
+    return;
+  }
+  preview.className="coordinate-preview";
+  preview.innerHTML=`<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}">
+    <div class="coordinate-card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div>
+    <div class="coordinate-card-id">${esc(card.id)}</div>`;
+}
+function setView(view){
+  const isCoordinate=view==="coordinate";
+  $("controls").hidden=isCoordinate;
+  $("mainContent").hidden=isCoordinate;
+  $("coordinateView").hidden=!isCoordinate;
+  $("pageActionBar").hidden=isCoordinate;
+  $("cardListTab").classList.toggle("active",!isCoordinate);
+  $("cardListTab").setAttribute("aria-selected",String(!isCoordinate));
+  $("coordinateTab").classList.toggle("active",isCoordinate);
+  $("coordinateTab").setAttribute("aria-selected",String(isCoordinate));
+}
+
 function filtered(){
   const q=$( "search").value.trim().toLowerCase();
   const cat=$("category").value,type=$("type").value,grade=$("grade").value,season=$("season").value;
@@ -364,6 +419,8 @@ $("unownedOnly").addEventListener("click",()=>{
   ownedFilter=ownedFilter==="unowned"?null:"unowned";
   render();
 });
+$("cardListTab").addEventListener("click",()=>setView("list"));
+$("coordinateTab").addEventListener("click",()=>setView("coordinate"));
 $("pageWishlistMode").addEventListener("click",()=>setSelectionMode("wishlist"));
 $("pageOwnedMode").addEventListener("click",()=>setSelectionMode("owned"));
 

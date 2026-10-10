@@ -218,8 +218,8 @@ function renderCoordinatePreview(slot){
     $(slot.picker).textContent=slot.category+" 선택 ⌄";
     return;
   }
-  preview.className="coordinate-preview"+(isOwned(card)?" owned":" unowned");
-  preview.innerHTML=`<img class="coordinate-card-image ${isOwned(card)?"":"unowned-image"}" src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}">
+  preview.className="coordinate-preview";
+  preview.innerHTML=`<img class="coordinate-card-image ${isAccessory(card)?"coordinate-accessory-image":""}" src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||slot.category)}">
     <div class="coordinate-card-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</div>`;
 }
 function currentCoordinateIds(){

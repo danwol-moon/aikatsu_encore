@@ -171,13 +171,34 @@ function persistSavedCoordinates(){
 }
 function coordinateCategoryMatches(card,category){
   const actual=normalize(card.category);
+  if(category==="상의")return actual==="상의"||actual==="원피스";
   if(category==="액세서리")return actual==="액세서리"||actual==="악세서리";
   return actual===normalize(category);
+}
+function isOnePiece(card){
+  return !!card&&normalize(card.category)==="원피스";
 }
 function buildCoordinateOptions(){
   coordinateSlots.forEach(slot=>{
     const list=$(slot.options);
     list.innerHTML="";
+    const none=document.createElement("button");
+    none.type="button";
+    none.className="coordinate-option coordinate-option-none";
+    none.innerHTML='<span class="coordinate-option-x" aria-hidden="true">X</span><span class="coordinate-option-name">선택 없음</span>';
+    none.addEventListener("click",()=>{
+      slot.selected="";
+      if(slot.category==="상의"&&isOnePiece(getCoordinateCard(slot)))coordinateSlots[1].selected="";
+      if(slot.category==="하의"&&isOnePiece(getCoordinateCard(coordinateSlots[0])))coordinateSlots[0].selected="";
+      coordinateSlots.forEach(other=>{
+        const card=getCoordinateCard(other);
+        updateCoordinatePicker(other,card);
+        renderCoordinatePreview(other);
+        $(other.options).hidden=true;
+        $(other.picker).setAttribute("aria-expanded","false");
+      });
+    });
+    list.appendChild(none);
     cards.filter(card=>coordinateCategoryMatches(card,slot.category))
       .sort((a,b)=>String(a.id).localeCompare(String(b.id),"ko",{numeric:true}))
       .forEach(card=>{
@@ -187,11 +208,15 @@ function buildCoordinateOptions(){
         option.innerHTML=`<img class="${isAccessory(card)?"coordinate-accessory-thumb":""}" src="${esc(card.front)}" alt="" loading="lazy">
           <span class="coordinate-option-name">${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
         option.addEventListener("click",()=>{
+          if(slot.category==="상의"&&isOnePiece(card))coordinateSlots[1].selected="";
+          if(slot.category==="하의"&&isOnePiece(getCoordinateCard(coordinateSlots[0])))coordinateSlots[0].selected="";
           slot.selected=cardKey(card);
-          $(slot.picker).innerHTML=`<span class="coordinate-picker-current"><img class="${isAccessory(card)?"coordinate-accessory-thumb":""}" src="${esc(card.front)}" alt="">${esc(card.nameKo||card.nameJa||"이름 없음")}</span><span>⌄</span>`;
-          $(slot.picker).setAttribute("aria-expanded","false");
-          list.hidden=true;
-          renderCoordinatePreview(slot);
+          coordinateSlots.forEach(other=>{
+            updateCoordinatePicker(other,getCoordinateCard(other));
+            renderCoordinatePreview(other);
+            $(other.options).hidden=true;
+            $(other.picker).setAttribute("aria-expanded","false");
+          });
         });
         list.appendChild(option);
       });
@@ -205,17 +230,30 @@ function buildCoordinateOptions(){
       $(slot.picker).setAttribute("aria-expanded",String(!open));
     });
   });
+  coordinateSlots.forEach(slot=>{slot.selected="";});
   renderSavedCoordinates();
 }
 function getCoordinateCard(slot){
   return cards.find(item=>cardKey(item)===String(slot.selected||""))||null;
 }
+function updateCoordinatePicker(slot,card){
+  const picker=$(slot.picker);
+  const topCard=getCoordinateCard(coordinateSlots[0]);
+  if(slot.category==="하의"&&isOnePiece(topCard)){
+    picker.innerHTML='<span class="coordinate-picker-current coordinate-picker-unavailable">선택 불가</span><span>⌄</span>';
+    picker.setAttribute("aria-label","원피스 선택 중: 하의를 선택하면 원피스가 해제됩니다");
+    return;
+  }
+  picker.removeAttribute("aria-label");
+  if(card){
+    picker.innerHTML=`<span class="coordinate-picker-current"><img class="${isAccessory(card)?"coordinate-accessory-thumb":""}" src="${esc(card.front)}" alt="">${esc(card.nameKo||card.nameJa||"이름 없음")}</span><span>⌄</span>`;
+  }else picker.innerHTML=`<span class="coordinate-picker-current">선택 없음</span><span>⌄</span>`;
+}
 function renderCoordinatePreview(slot){
   const preview=$(slot.preview),card=getCoordinateCard(slot);
   if(!card){
     preview.className="coordinate-preview empty";
-    preview.textContent=slot.placeholder;
-    $(slot.picker).textContent=slot.category+" 선택 ⌄";
+    preview.innerHTML=`<div class="coordinate-placeholder-image" aria-hidden="true">X</div><div class="coordinate-card-name">${esc(slot.placeholder)}</div>`;
     return;
   }
   preview.className="coordinate-preview";
@@ -229,12 +267,10 @@ function currentCoordinateIds(){
   return coordinateSlots.map(slot=>String(slot.selected||""));
 }
 function applyCoordinateIds(ids){
-  coordinateSlots.forEach((slot,index)=>{
-    slot.selected=String(ids?.[index]||"");
-    const card=getCoordinateCard(slot);
-    if(card){
-      $(slot.picker).innerHTML=`<span class="coordinate-picker-current"><img src="${esc(card.front)}" alt="">${esc(card.nameKo||card.nameJa||"이름 없음")}</span><span>⌄</span>`;
-    }else $(slot.picker).textContent=slot.category+" 선택 ⌄";
+  coordinateSlots.forEach((slot,index)=>{slot.selected=String(ids?.[index]||"");});
+  if(isOnePiece(getCoordinateCard(coordinateSlots[0])))coordinateSlots[1].selected="";
+  coordinateSlots.forEach(slot=>{
+    updateCoordinatePicker(slot,getCoordinateCard(slot));
     renderCoordinatePreview(slot);
   });
 }
@@ -253,7 +289,7 @@ function renderSavedCoordinates(){
     title.className="saved-coordinate-title";
     const ownedSlots=outfit.ids.filter(id=>{const card=cards.find(item=>cardKey(item)===String(id));return card&&isOwned(card);}).length;
     const chosenSlots=outfit.ids.filter(Boolean).length;
-    title.innerHTML=`${esc(outfit.name||("코디 "+(index+1)))}<small><span class="saved-coordinate-count">${ownedSlots}/${chosenSlots}장 보유</span><span class="saved-coordinate-edit-hint"> · 눌러서 이름 수정</span></small>`;
+    title.innerHTML=`<span class="saved-coordinate-name">${esc(outfit.name||("코디 "+(index+1)))}</span><span class="saved-coordinate-meta"> (${ownedSlots}/${chosenSlots} 보유) <span class="saved-coordinate-edit-hint">눌러서 코디 이름 변경 가능</span></span>`;
     title.addEventListener("click",()=>{
       const next=prompt("코디 이름을 변경해 주세요.",outfit.name||("코디 "+(index+1)));
       if(next===null)return;
@@ -272,7 +308,7 @@ function renderSavedCoordinates(){
         item.innerHTML=`${isAccessory(card)
           ? `<div class="saved-coordinate-image-frame coordinate-accessory-frame"><img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="coordinate-accessory-image ${isOwned(card)?"":"unowned-image"}"></div>`
           : `<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="${isOwned(card)?"":"unowned-image"}">`}<span>${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
-      }else item.innerHTML='<span>선택 없음</span>';
+      }else item.innerHTML='<div class="saved-coordinate-image-frame saved-coordinate-empty-image" aria-label="선택 없음"><span>X</span></div><span>선택 없음</span>';
       cardsRow.appendChild(item);
     });
     const actions=document.createElement("div");

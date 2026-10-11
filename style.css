@@ -311,3 +311,47 @@ main{padding:8px 18px}
 }
 .coordinate-option-none .coordinate-option-x{display:none}
 .saved-coordinate-empty-image{font-size:0}
+
+
+/* 이전 시리즈 카드 개인 목록 */
+.previous-series-view{max-width:1100px;margin:24px auto 50px;padding:0 22px}
+.previous-series-heading{text-align:center;margin:0 auto 22px}
+.previous-series-heading h2{margin:0 0 8px;font-family:var(--display);font-size:26px;color:var(--cover-ink)}
+.previous-series-heading p{margin:5px 0;color:var(--ink-soft);font-size:14px}
+.previous-series-heading .previous-series-storage-note{font-size:12px;opacity:.8}
+.previous-card-form{display:grid;grid-template-columns:minmax(160px,220px) 1fr;gap:22px;align-items:stretch;padding:20px;border:1px solid var(--pocket-edge);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:var(--shadow)}
+.previous-image-upload{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--pocket-edge);border-radius:12px;background:var(--pocket);color:var(--cover-ink);font-family:var(--display);cursor:pointer;text-align:center;padding:16px}
+.previous-image-upload input{width:100%;max-width:190px;font-family:var(--body);font-size:12px}
+.previous-upload-icon{font-size:44px;line-height:1;color:var(--accent)}
+.previous-card-fields{display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:0}
+.previous-name-label,.previous-category-label{font-size:14px;font-weight:700;color:var(--cover-ink)}
+#previousCardName{width:100%;box-sizing:border-box;border:1px solid var(--pocket-edge);border-radius:10px;padding:12px 14px;background:#fff;color:var(--ink);font:inherit}
+.previous-category-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.previous-category-button{border:1px solid var(--pocket-edge);border-radius:999px;padding:9px 15px;background:#fff;color:var(--cover-ink);font-family:var(--display);font-size:14px;cursor:pointer}
+.previous-category-button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.previous-add-button{align-self:flex-start;margin-top:auto;border:0;border-radius:999px;padding:11px 24px;background:var(--accent);color:#fff;font-family:var(--display);font-size:15px;cursor:pointer}
+.previous-series-list-heading{display:flex;align-items:center;justify-content:space-between;margin:28px 2px 12px;color:var(--cover-ink)}
+.previous-series-list-heading h3{margin:0;font-family:var(--display);font-size:20px}
+.previous-series-list-heading span{font-size:13px;color:var(--ink-soft)}
+.previous-series-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.previous-series-card{position:relative;min-width:0;overflow:hidden;border:1px solid var(--pocket-edge);border-radius:12px;background:#fff;box-shadow:var(--shadow)}
+.previous-series-card-image{display:block;width:100%;aspect-ratio:3/4;object-fit:contain;background:var(--pocket)}
+.previous-series-card-info{padding:10px 11px 12px}
+.previous-series-card-name{overflow-wrap:anywhere;font-family:var(--display);font-size:15px;color:var(--cover-ink)}
+.previous-series-card-category{display:inline-block;margin-top:6px;padding:3px 9px;border-radius:999px;background:var(--pocket);color:var(--ink-soft);font-size:12px}
+.previous-series-delete{position:absolute;top:7px;right:7px;width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.94);color:#8a5366;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 1px 5px #0002}
+.previous-series-empty{grid-column:1/-1;margin:0;padding:35px 16px;border:1px dashed var(--pocket-edge);border-radius:12px;color:var(--ink-soft);text-align:center}
+@media(max-width:600px){
+  .view-tabs{flex-wrap:wrap}
+  .view-tab{font-size:12px;padding:10px 7px}
+  .previous-series-view{margin:18px auto 35px;padding:0 12px}
+  .previous-series-heading h2{font-size:22px}
+  .previous-series-heading p{font-size:12px}
+  .previous-card-form{grid-template-columns:1fr;gap:14px;padding:13px}
+  .previous-image-upload{min-height:145px}
+  .previous-series-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .previous-series-card-name{font-size:13px}
+  .previous-category-buttons{gap:6px}
+  .previous-category-button{padding:8px 11px;font-size:13px}
+  .previous-add-button{width:100%}
+}

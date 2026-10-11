@@ -385,3 +385,16 @@ main{padding:8px 18px}
 .previous-type-buttons{margin-bottom:6px}
 .previous-series-card-type{display:inline-block;margin:6px 0 0 5px;padding:3px 9px;border-radius:999px;background:#f8eaf0;color:#9b536f;font-size:12px;font-weight:700}
 @media(max-width:600px){.previous-series-card-type{font-size:10px;padding:3px 7px;margin-left:3px}}
+
+/* Keep category and type selectors side by side in one horizontal row. */
+.previous-button-groups{display:flex;align-items:flex-start;gap:16px;width:100%;min-width:0;overflow-x:auto;padding-bottom:2px}
+.previous-button-group{display:flex;flex-direction:column;gap:7px;flex:0 0 auto;min-width:0}
+.previous-button-group .previous-category-buttons{flex-wrap:nowrap;gap:6px}
+.previous-button-group .previous-category-button{white-space:nowrap;padding:8px 12px}
+.previous-type-group{padding-left:14px;border-left:1px solid var(--line)}
+.previous-type-buttons{margin-bottom:0}
+@media(max-width:600px){
+  .previous-button-groups{gap:10px}
+  .previous-button-group .previous-category-button{padding:7px 9px;font-size:12px}
+  .previous-type-group{padding-left:10px}
+}

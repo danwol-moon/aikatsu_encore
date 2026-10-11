@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=previous-card-type-buttons-20261012">
+<link rel="stylesheet" href="style.css?v=category-type-inline-20261012">
 </head>
 <body>
 <div class="wrap">
@@ -38,23 +38,29 @@
         <input id="previousCardImageUrl" type="url" placeholder="https://example.com/card.jpg" autocomplete="url">
         <p class="previous-image-url-hint">이미지 파일을 선택하거나, 이미지가 직접 열리는 주소를 입력해 주세요.</p>
         <label class="previous-name-label" for="previousCardNumber">카드 번호</label>
-        <input id="previousCardNumber" type="text" maxlength="50" placeholder="예: SP-006 (번호순으로 정렬돼요)" autocomplete="off">
+        <input id="previousCardNumber" type="text" maxlength="50" placeholder="" autocomplete="off">
         <label class="previous-name-label" for="previousCardName">카드 이름</label>
         <input id="previousCardName" type="text" maxlength="100" placeholder="카드 이름을 입력해 주세요" required>
-        <div class="previous-category-label">카테고리 선택</div>
-        <div id="previousCategoryButtons" class="previous-category-buttons" role="group" aria-label="카드 카테고리">
-          <button type="button" class="previous-category-button active" data-category="상의" aria-pressed="true">상의</button>
-          <button type="button" class="previous-category-button" data-category="하의" aria-pressed="false">하의</button>
-          <button type="button" class="previous-category-button" data-category="원피스" aria-pressed="false">원피스</button>
-          <button type="button" class="previous-category-button" data-category="슈즈" aria-pressed="false">슈즈</button>
-          <button type="button" class="previous-category-button" data-category="액세서리" aria-pressed="false">액세서리</button>
-        </div>
-        <div class="previous-category-label">타입 선택</div>
-        <div id="previousTypeButtons" class="previous-category-buttons previous-type-buttons" role="group" aria-label="카드 타입">
-          <button type="button" class="previous-category-button active" data-type="큐트" aria-pressed="true">큐트</button>
-          <button type="button" class="previous-category-button" data-type="쿨" aria-pressed="false">쿨</button>
-          <button type="button" class="previous-category-button" data-type="섹시" aria-pressed="false">섹시</button>
-          <button type="button" class="previous-category-button" data-type="팝" aria-pressed="false">팝</button>
+        <div class="previous-button-groups">
+          <div class="previous-button-group">
+            <div class="previous-category-label">카테고리 선택</div>
+            <div id="previousCategoryButtons" class="previous-category-buttons" role="group" aria-label="카드 카테고리">
+              <button type="button" class="previous-category-button active" data-category="상의" aria-pressed="true">상의</button>
+              <button type="button" class="previous-category-button" data-category="하의" aria-pressed="false">하의</button>
+              <button type="button" class="previous-category-button" data-category="원피스" aria-pressed="false">원피스</button>
+              <button type="button" class="previous-category-button" data-category="슈즈" aria-pressed="false">슈즈</button>
+              <button type="button" class="previous-category-button" data-category="액세서리" aria-pressed="false">액세서리</button>
+            </div>
+          </div>
+          <div class="previous-button-group previous-type-group">
+            <div class="previous-category-label">타입 선택</div>
+            <div id="previousTypeButtons" class="previous-category-buttons previous-type-buttons" role="group" aria-label="카드 타입">
+              <button type="button" class="previous-category-button active" data-type="큐트" aria-pressed="true">큐트</button>
+              <button type="button" class="previous-category-button" data-type="쿨" aria-pressed="false">쿨</button>
+              <button type="button" class="previous-category-button" data-type="섹시" aria-pressed="false">섹시</button>
+              <button type="button" class="previous-category-button" data-type="팝" aria-pressed="false">팝</button>
+            </div>
+          </div>
         </div>
         <div class="previous-form-actions">
           <button id="previousCardSubmit" class="previous-add-button" type="submit">카드 추가</button>
@@ -184,6 +190,6 @@
     <button id="pageOwnedMode" type="button" aria-pressed="false">＋ 보유 체크</button>
   </div>
 </div>
-<script src="script.js?v=previous-card-type-buttons-20261012"></script>
+<script src="script.js?v=category-type-inline-20261012"></script>
 </body>
 </html>

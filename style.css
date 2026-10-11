@@ -274,7 +274,7 @@ main{padding:8px 18px}
 /* 코디 저장 제목: 이름, 보유 수, 수정 안내를 한 줄로 표시 */
 .saved-coordinate-title{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 6px;font-size:21px;line-height:1.35}
 .saved-coordinate-name{font-size:21px;font-weight:700;white-space:nowrap}
-.saved-coordinate-meta{font-family:var(--body);font-size:12px;font-weight:400;color:var(--cover-ink)}
+.saved-coordinate-meta{font-family:inherit;font-size:12px;font-weight:400;color:var(--cover-ink)}
 .saved-coordinate-title .saved-coordinate-edit-hint{color:#888}
 .coordinate-placeholder-image,
 .saved-coordinate-empty-image{

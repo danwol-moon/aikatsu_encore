@@ -357,6 +357,7 @@ const PREVIOUS_DB_NAME="aikatsuEncorePreviousCards";
 const PREVIOUS_DB_STORE="cards";
 let previousCategory="상의";
 let previousCards=[];
+let editingPreviousCardId=null;
 let previousImageUrls=[];
 function openPreviousCardsDB(){
   return new Promise((resolve,reject)=>{
@@ -417,6 +418,14 @@ function renderPreviousCards(){
   grid.innerHTML="";
   const categoryOrder=["상의","하의","원피스","슈즈","액세서리","악세서리"];
   const orderedCards=[...previousCards].sort((a,b)=>{
+    const numberA=String(a.number||"").trim();
+    const numberB=String(b.number||"").trim();
+    if(numberA&&numberB){
+      const byNumber=numberA.localeCompare(numberB,"ko",{numeric:true,sensitivity:"base"});
+      if(byNumber!==0)return byNumber;
+    }else if(numberA||numberB){
+      return numberA?-1:1;
+    }
     const categoryName=value=>value==="악세서리"?"액세서리":value;
     const ra=categoryOrder.indexOf(categoryName(a.category));
     const rb=categoryOrder.indexOf(categoryName(b.category));
@@ -442,12 +451,23 @@ function renderPreviousCards(){
     image.onerror=()=>{image.alt="이미지를 불러올 수 없어요";image.removeAttribute("src");};
     const info=document.createElement("div");
     info.className="previous-series-card-info";
+    const number=document.createElement("div");
+    number.className="previous-series-card-number";
+    number.textContent=card.number?("번호 "+card.number):"번호 미등록";
     const name=document.createElement("div");
     name.className="previous-series-card-name";
     name.textContent=card.name;
     const category=document.createElement("span");
     category.className="previous-series-card-category";
     category.textContent=card.category;
+    const actions=document.createElement("div");
+    actions.className="previous-series-actions";
+    const edit=document.createElement("button");
+    edit.type="button";
+    edit.className="previous-series-edit";
+    edit.textContent="수정";
+    edit.setAttribute("aria-label",card.name+" 수정");
+    edit.addEventListener("click",()=>startEditingPreviousCard(card.id));
     const remove=document.createElement("button");
     remove.type="button";
     remove.className="previous-series-delete";
@@ -455,11 +475,16 @@ function renderPreviousCards(){
     remove.setAttribute("aria-label",card.name+" 삭제");
     remove.addEventListener("click",async()=>{
       if(!confirm("「"+card.name+"」 카드를 삭제할까요?"))return;
-      try{await deletePreviousCard(card.id);previousCards=previousCards.filter(item=>item.id!==card.id);renderPreviousCards();}
-      catch(error){alert("카드를 삭제하지 못했어요.");}
+      try{
+        await deletePreviousCard(card.id);
+        previousCards=previousCards.filter(item=>item.id!==card.id);
+        if(editingPreviousCardId===card.id)resetPreviousCardForm();
+        renderPreviousCards();
+      }catch(error){alert("카드를 삭제하지 못했어요.");}
     });
-    info.append(name,category);
-    article.append(image,info,remove);
+    info.append(number,name,category);
+    actions.append(edit,remove);
+    article.append(image,info,actions);
     grid.appendChild(article);
   });
 }
@@ -710,12 +735,47 @@ $("previousCardImageUrl").addEventListener("input",()=>{
     $("previousImageLabel").textContent="카드 이미지 추가";
   }
 });
+function resetPreviousCardForm(){
+  editingPreviousCardId=null;
+  $("previousCardForm").reset();
+  $("previousImageLabel").textContent="카드 이미지 추가";
+  $("previousCardSubmit").textContent="카드 추가";
+  $("previousCardCancelEdit").hidden=true;
+  previousCategory="상의";
+  $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(button=>{
+    const active=button.dataset.category===previousCategory;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+}
+function startEditingPreviousCard(id){
+  const card=previousCards.find(item=>item.id===id);
+  if(!card)return;
+  editingPreviousCardId=card.id;
+  $("previousCardNumber").value=card.number||"";
+  $("previousCardName").value=card.name||"";
+  $("previousCardImageUrl").value=card.imageUrl||"";
+  $("previousCardImage").value="";
+  $("previousImageLabel").textContent=card.imageUrl?"기존 이미지 주소 사용 중":"이미지 변경 시 파일을 선택해 주세요";
+  previousCategory=card.category||"상의";
+  $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(button=>{
+    const active=button.dataset.category===previousCategory;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+  $("previousCardSubmit").textContent="수정 저장";
+  $("previousCardCancelEdit").hidden=false;
+  $("previousCardForm").scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("previousCardCancelEdit").addEventListener("click",resetPreviousCardForm);
 $("previousCardForm").addEventListener("submit",async event=>{
   event.preventDefault();
   const file=$("previousCardImage").files[0];
   const imageUrl=$("previousCardImageUrl").value.trim();
+  const number=$("previousCardNumber").value.trim();
   const name=$("previousCardName").value.trim();
-  if((!file&&!imageUrl)||!name){alert("이미지 파일 또는 이미지 주소와 카드 이름을 입력해 주세요.");return;}
+  const existing=editingPreviousCardId?previousCards.find(item=>item.id===editingPreviousCardId):null;
+  if((!file&&!imageUrl&&!existing)||!name){alert("이미지 파일 또는 이미지 주소와 카드 이름을 입력해 주세요.");return;}
   if(file&&!file.type.startsWith("image/")){alert("이미지 파일을 선택해 주세요.");return;}
   if(imageUrl){
     try{
@@ -723,20 +783,22 @@ $("previousCardForm").addEventListener("submit",async event=>{
       if(!["http:","https:"].includes(parsed.protocol))throw new Error("invalid protocol");
     }catch(error){alert("http:// 또는 https://로 시작하는 올바른 이미지 주소를 입력해 주세요.");return;}
   }
-  const submit=$("previousCardForm").querySelector('[type="submit"]');
+  const submit=$("previousCardSubmit");
   submit.disabled=true;
   try{
-    const card={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(36).slice(2)),name,category:previousCategory,...(file?{image:file}:{imageUrl}),createdAt:Date.now()};
+    const card={
+      ...(existing||{}),
+      id:existing?existing.id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(36).slice(2)),
+      number,name,category:previousCategory,
+      createdAt:existing?.createdAt||Date.now(),
+      updatedAt:Date.now()
+    };
+    if(file){card.image=file;delete card.imageUrl;}
+    else if(imageUrl){card.imageUrl=imageUrl;delete card.image;}
     await savePreviousCard(card);
-    previousCards.unshift(card);
-    $("previousCardForm").reset();
-    $("previousImageLabel").textContent="카드 이미지 추가";
-    previousCategory="상의";
-    $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(button=>{
-      const active=button.dataset.category===previousCategory;
-      button.classList.toggle("active",active);
-      button.setAttribute("aria-pressed",String(active));
-    });
+    if(existing)previousCards=previousCards.map(item=>item.id===card.id?card:item);
+    else previousCards.unshift(card);
+    resetPreviousCardForm();
     renderPreviousCards();
   }catch(error){alert("카드를 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.");}
   finally{submit.disabled=false;}

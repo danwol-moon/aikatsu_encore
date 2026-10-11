@@ -356,6 +356,7 @@ function setView(view){
 const PREVIOUS_DB_NAME="aikatsuEncorePreviousCards";
 const PREVIOUS_DB_STORE="cards";
 let previousCategory="상의";
+let previousType="큐트";
 let previousCards=[];
 let editingPreviousCardId=null;
 let previousImageUrls=[];
@@ -460,6 +461,9 @@ function renderPreviousCards(){
     const category=document.createElement("span");
     category.className="previous-series-card-category";
     category.textContent=card.category;
+    const type=document.createElement("span");
+    type.className="previous-series-card-type";
+    type.textContent=card.type||"타입 미등록";
     const actions=document.createElement("div");
     actions.className="previous-series-actions";
     const edit=document.createElement("button");
@@ -482,7 +486,7 @@ function renderPreviousCards(){
         renderPreviousCards();
       }catch(error){alert("카드를 삭제하지 못했어요.");}
     });
-    info.append(number,name,category);
+    info.append(number,name,category,type);
     actions.append(edit,remove);
     article.append(image,info,actions);
     grid.appendChild(article);
@@ -724,6 +728,16 @@ $("previousCategoryButtons").addEventListener("click",event=>{
     item.setAttribute("aria-pressed",String(active));
   });
 });
+$("previousTypeButtons").addEventListener("click",event=>{
+  const button=event.target.closest("[data-type]");
+  if(!button)return;
+  previousType=button.dataset.type;
+  $("previousTypeButtons").querySelectorAll("[data-type]").forEach(item=>{
+    const active=item===button;
+    item.classList.toggle("active",active);
+    item.setAttribute("aria-pressed",String(active));
+  });
+});
 $("previousCardImage").addEventListener("change",()=>{
   const file=$("previousCardImage").files[0];
   $("previousImageLabel").textContent=file?file.name:"카드 이미지 추가";
@@ -742,6 +756,12 @@ function resetPreviousCardForm(){
   $("previousCardSubmit").textContent="카드 추가";
   $("previousCardCancelEdit").hidden=true;
   previousCategory="상의";
+  previousType="큐트";
+  $("previousTypeButtons").querySelectorAll("[data-type]").forEach(button=>{
+    const active=button.dataset.type===previousType;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
   $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(button=>{
     const active=button.dataset.category===previousCategory;
     button.classList.toggle("active",active);
@@ -755,6 +775,12 @@ function startEditingPreviousCard(id){
   $("previousCardNumber").value=card.number||"";
   $("previousCardName").value=card.name||"";
   $("previousCardImageUrl").value=card.imageUrl||"";
+  previousType=card.type||"큐트";
+  $("previousTypeButtons").querySelectorAll("[data-type]").forEach(button=>{
+    const active=button.dataset.type===previousType;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
   $("previousCardImage").value="";
   $("previousImageLabel").textContent=card.imageUrl?"기존 이미지 주소 사용 중":"이미지 변경 시 파일을 선택해 주세요";
   previousCategory=card.category||"상의";
@@ -789,7 +815,7 @@ $("previousCardForm").addEventListener("submit",async event=>{
     const card={
       ...(existing||{}),
       id:existing?existing.id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(36).slice(2)),
-      number,name,category:previousCategory,
+      number,name,category:previousCategory,type:previousType,
       createdAt:existing?.createdAt||Date.now(),
       updatedAt:Date.now()
     };

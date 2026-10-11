@@ -421,9 +421,14 @@ function renderPreviousCards(){
     const image=document.createElement("img");
     image.className="previous-series-card-image";
     image.alt=card.name;
-    const url=URL.createObjectURL(card.image);
-    previousImageUrls.push(url);
-    image.src=url;
+    if(card.image instanceof Blob){
+      const url=URL.createObjectURL(card.image);
+      previousImageUrls.push(url);
+      image.src=url;
+    }else{
+      image.src=card.imageUrl||"";
+    }
+    image.onerror=()=>{image.alt="이미지를 불러올 수 없어요";image.removeAttribute("src");};
     const info=document.createElement("div");
     info.className="previous-series-card-info";
     const name=document.createElement("div");
@@ -686,17 +691,31 @@ $("previousCategoryButtons").addEventListener("click",event=>{
 $("previousCardImage").addEventListener("change",()=>{
   const file=$("previousCardImage").files[0];
   $("previousImageLabel").textContent=file?file.name:"카드 이미지 추가";
+  if(file)$("previousCardImageUrl").value="";
+});
+$("previousCardImageUrl").addEventListener("input",()=>{
+  if($("previousCardImageUrl").value.trim()){
+    $("previousCardImage").value="";
+    $("previousImageLabel").textContent="카드 이미지 추가";
+  }
 });
 $("previousCardForm").addEventListener("submit",async event=>{
   event.preventDefault();
   const file=$("previousCardImage").files[0];
+  const imageUrl=$("previousCardImageUrl").value.trim();
   const name=$("previousCardName").value.trim();
-  if(!file||!name){alert("이미지와 카드 이름을 입력해 주세요.");return;}
-  if(!file.type.startsWith("image/")){alert("이미지 파일을 선택해 주세요.");return;}
+  if((!file&&!imageUrl)||!name){alert("이미지 파일 또는 이미지 주소와 카드 이름을 입력해 주세요.");return;}
+  if(file&&!file.type.startsWith("image/")){alert("이미지 파일을 선택해 주세요.");return;}
+  if(imageUrl){
+    try{
+      const parsed=new URL(imageUrl);
+      if(!["http:","https:"].includes(parsed.protocol))throw new Error("invalid protocol");
+    }catch(error){alert("http:// 또는 https://로 시작하는 올바른 이미지 주소를 입력해 주세요.");return;}
+  }
   const submit=$("previousCardForm").querySelector('[type="submit"]');
   submit.disabled=true;
   try{
-    const card={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(36).slice(2)),name,category:previousCategory,image:file,createdAt:Date.now()};
+    const card={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(36).slice(2)),name,category:previousCategory,...(file?{image:file}:{imageUrl}),createdAt:Date.now()};
     await savePreviousCard(card);
     previousCards.unshift(card);
     $("previousCardForm").reset();

@@ -302,7 +302,6 @@ main{padding:8px 18px}
 
 
 /* 선택 없음에는 X를 표시하지 않고, 선택 불가 X만 작게 표시 */
-.coordinate-preview.empty.no-selection .coordinate-placeholder-image{visibility:hidden}
 .coordinate-preview.empty.unavailable .coordinate-placeholder-image{
   font-size:clamp(38px,5vw,58px);
 }

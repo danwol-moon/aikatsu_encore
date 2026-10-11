@@ -321,7 +321,7 @@ main{padding:8px 18px}
 .previous-series-heading .previous-series-storage-note{font-size:12px;opacity:.8}
 .previous-card-form{display:grid;grid-template-columns:minmax(160px,220px) 1fr;gap:22px;align-items:stretch;padding:20px;border:1px solid var(--pocket-edge);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:var(--shadow)}
 .previous-image-upload{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--pocket-edge);border-radius:12px;background:var(--pocket);color:var(--cover-ink);font-family:var(--display);cursor:pointer;text-align:center;padding:16px}
-.previous-image-upload input{width:100%;max-width:190px;font-family:var(--body);font-size:12px}
+.previous-image-upload input{display:none}
 .previous-upload-icon{font-size:44px;line-height:1;color:var(--accent)}
 .previous-card-fields{display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:0}
 .previous-name-label,.previous-category-label{font-size:14px;font-weight:700;color:var(--cover-ink)}

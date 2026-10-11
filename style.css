@@ -299,3 +299,15 @@ main{padding:8px 18px}
   .coordinate-option-none{min-height:52px}
   .coordinate-option-x{flex-basis:38px;height:52px;font-size:32px}
 }
+
+
+/* 선택 없음에는 X를 표시하지 않고, 선택 불가 X만 작게 표시 */
+.coordinate-preview.empty.no-selection .coordinate-placeholder-image{visibility:hidden}
+.coordinate-preview.empty.unavailable .coordinate-placeholder-image{
+  font-size:clamp(38px,5vw,58px);
+}
+@media(max-width:600px){
+  .coordinate-preview.empty.unavailable .coordinate-placeholder-image{font-size:44px}
+}
+.coordinate-option-none .coordinate-option-x{display:none}
+.saved-coordinate-empty-image{font-size:0}

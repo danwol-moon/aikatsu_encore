@@ -18,8 +18,43 @@
   </header>
   <div class="view-tabs" role="tablist" aria-label="페이지 선택">
     <button id="cardListTab" class="view-tab active" type="button" role="tab" aria-selected="true">카드 목록</button>
+    <button id="previousSeriesTab" class="view-tab" type="button" role="tab" aria-selected="false">이전 시리즈 카드</button>
     <button id="coordinateTab" class="view-tab" type="button" role="tab" aria-selected="false">코디네이트</button>
   </div>
+  <section id="previousSeriesView" class="previous-series-view" hidden aria-label="이전 시리즈 카드">
+    <div class="previous-series-heading">
+      <h2>이전 시리즈 카드</h2>
+      <p>이미지와 카드 이름, 카테고리를 등록해 나만의 이전 시리즈 카드 목록을 만들 수 있어요.</p>
+      <p class="previous-series-storage-note">등록한 카드는 현재 브라우저에 저장돼요. 다른 기기나 브라우저와는 자동으로 공유되지 않아요.</p>
+    </div>
+    <form id="previousCardForm" class="previous-card-form">
+      <label class="previous-image-upload" for="previousCardImage">
+        <span class="previous-upload-icon" aria-hidden="true">＋</span>
+        <span id="previousImageLabel">카드 이미지 추가</span>
+        <input id="previousCardImage" type="file" accept="image/*" required>
+      </label>
+      <div class="previous-card-fields">
+        <label class="previous-name-label" for="previousCardName">카드 이름</label>
+        <input id="previousCardName" type="text" maxlength="100" placeholder="카드 이름을 입력해 주세요" required>
+        <div class="previous-category-label">카테고리 선택</div>
+        <div id="previousCategoryButtons" class="previous-category-buttons" role="group" aria-label="카드 카테고리">
+          <button type="button" class="previous-category-button active" data-category="원피스" aria-pressed="true">원피스</button>
+          <button type="button" class="previous-category-button" data-category="상의" aria-pressed="false">상의</button>
+          <button type="button" class="previous-category-button" data-category="하의" aria-pressed="false">하의</button>
+          <button type="button" class="previous-category-button" data-category="슈즈" aria-pressed="false">슈즈</button>
+          <button type="button" class="previous-category-button" data-category="액세서리" aria-pressed="false">액세서리</button>
+        </div>
+        <button class="previous-add-button" type="submit">카드 추가</button>
+      </div>
+    </form>
+    <div class="previous-series-list-heading">
+      <h3>등록한 카드</h3>
+      <span id="previousCardCount">0장</span>
+    </div>
+    <div id="previousSeriesGrid" class="previous-series-grid">
+      <p class="previous-series-empty">아직 등록한 카드가 없어요.</p>
+    </div>
+  </section>
   <nav id="controls" class="controls" aria-label="카드 검색 및 필터">
     <div class="search-wrap">
       <span class="search-icon">⌕</span>

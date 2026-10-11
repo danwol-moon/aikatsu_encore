@@ -253,7 +253,7 @@ function renderSavedCoordinates(){
     title.className="saved-coordinate-title";
     const ownedSlots=outfit.ids.filter(id=>{const card=cards.find(item=>cardKey(item)===String(id));return card&&isOwned(card);}).length;
     const chosenSlots=outfit.ids.filter(Boolean).length;
-    title.innerHTML=`${esc(outfit.name||("코디 "+(index+1)))}<small>${ownedSlots}/${chosenSlots}장 보유 · 눌러서 이름 수정</small>`;
+    title.innerHTML=`${esc(outfit.name||("코디 "+(index+1)))}<small><span class="saved-coordinate-count">${ownedSlots}/${chosenSlots}장 보유</span><span class="saved-coordinate-edit-hint"> · 눌러서 이름 수정</span></small>`;
     title.addEventListener("click",()=>{
       const next=prompt("코디 이름을 변경해 주세요.",outfit.name||("코디 "+(index+1)));
       if(next===null)return;

@@ -353,8 +353,18 @@ function render(){
       if(event.target.closest(".card-heart"))return;
       if(selectionMode && event.target.closest(".card-image, .card-name")){
         event.stopPropagation();
-        if(selectionMode==="wishlist")toggleWishlist(card);
-        else if(selectionMode==="owned")addOwnedCopy(card);
+        if(selectionMode==="wishlist"){
+          toggleWishlist(card);
+        }else if(selectionMode==="owned"){
+          const imageArea=event.target.closest(".card-image");
+          if(imageArea){
+            const rect=imageArea.getBoundingClientRect();
+            const isUpperHalf=event.clientY < rect.top + rect.height / 2;
+            changeOwnedCount(card,isUpperHalf?1:-1);
+          }else{
+            addOwnedCopy(card);
+          }
+        }
         return;
       }
       openModal(card);
@@ -390,7 +400,7 @@ function updateSelectionModeUI(){
   $("pageActionHint").textContent=selectionMode==="wishlist"
     ?"카드 이미지 또는 이름을 눌러 위시리스트를 등록/해제하세요."
     :selectionMode==="owned"
-      ?"카드 이미지 또는 이름을 눌러 보유 장수를 늘리세요."
+      ?"카드 이미지 위쪽을 누르면 +1장, 아래쪽을 누르면 −1장 (0장 아래로는 내려가지 않아요). 카드 이름은 +1장입니다."
       :"원하는 작업 버튼을 선택한 뒤 카드 이미지 또는 이름을 눌러주세요.";
 }
 function toggleWishlist(card){

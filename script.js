@@ -336,18 +336,117 @@ function renderSavedCoordinates(){
 }
 function setView(view){
   const isCoordinate=view==="coordinate";
-  try{localStorage.setItem("aikatsuEncoreCurrentView",isCoordinate?"coordinate":"list");}catch(e){}
-  $("controls").hidden=isCoordinate;
-  $("mainContent").hidden=isCoordinate;
+  const isPrevious=view==="previous";
+  try{localStorage.setItem("aikatsuEncoreCurrentView",view);}catch(e){}
+  $("controls").hidden=isCoordinate||isPrevious;
+  $("mainContent").hidden=isCoordinate||isPrevious;
   $("coordinateView").hidden=!isCoordinate;
-  $("pageActionBar").hidden=isCoordinate;
-  $("cardListTab").classList.toggle("active",!isCoordinate);
-  $("cardListTab").setAttribute("aria-selected",String(!isCoordinate));
+  $("previousSeriesView").hidden=!isPrevious;
+  $("pageActionBar").hidden=isCoordinate||isPrevious;
+  $("cardListTab").classList.toggle("active",!isCoordinate&&!isPrevious);
+  $("cardListTab").setAttribute("aria-selected",String(!isCoordinate&&!isPrevious));
+  $("previousSeriesTab").classList.toggle("active",isPrevious);
+  $("previousSeriesTab").setAttribute("aria-selected",String(isPrevious));
   $("coordinateTab").classList.toggle("active",isCoordinate);
   $("coordinateTab").setAttribute("aria-selected",String(isCoordinate));
   if(isCoordinate)renderSavedCoordinates();
+  if(isPrevious)loadPreviousCards();
 }
 
+const PREVIOUS_DB_NAME="aikatsuEncorePreviousCards";
+const PREVIOUS_DB_STORE="cards";
+let previousCategory="원피스";
+let previousCards=[];
+let previousImageUrls=[];
+function openPreviousCardsDB(){
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open(PREVIOUS_DB_NAME,1);
+    request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains(PREVIOUS_DB_STORE))request.result.createObjectStore(PREVIOUS_DB_STORE,{keyPath:"id"});};
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error||new Error("저장소를 열 수 없어요."));
+  });
+}
+async function loadPreviousCards(){
+  try{
+    const db=await openPreviousCardsDB();
+    const cardsPromise=new Promise((resolve,reject)=>{
+      const tx=db.transaction(PREVIOUS_DB_STORE,"readonly");
+      const request=tx.objectStore(PREVIOUS_DB_STORE).getAll();
+      request.onsuccess=()=>resolve(request.result||[]);
+      request.onerror=()=>reject(request.error);
+    });
+    previousCards=await cardsPromise;
+    db.close();
+    previousCards.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    renderPreviousCards();
+  }catch(error){
+    $("previousSeriesGrid").innerHTML='<p class="previous-series-empty">이 브라우저에서는 카드 저장 기능을 사용할 수 없어요.</p>';
+  }
+}
+async function savePreviousCard(card){
+  const db=await openPreviousCardsDB();
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction(PREVIOUS_DB_STORE,"readwrite");
+    tx.objectStore(PREVIOUS_DB_STORE).put(card);
+    tx.oncomplete=resolve;
+    tx.onerror=()=>reject(tx.error);
+    tx.onabort=()=>reject(tx.error||new Error("저장에 실패했어요."));
+  });
+  db.close();
+}
+async function deletePreviousCard(id){
+  const db=await openPreviousCardsDB();
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction(PREVIOUS_DB_STORE,"readwrite");
+    tx.objectStore(PREVIOUS_DB_STORE).delete(id);
+    tx.oncomplete=resolve;
+    tx.onerror=()=>reject(tx.error);
+    tx.onabort=()=>reject(tx.error||new Error("삭제에 실패했어요."));
+  });
+  db.close();
+}
+function renderPreviousCards(){
+  previousImageUrls.forEach(url=>URL.revokeObjectURL(url));
+  previousImageUrls=[];
+  $("previousCardCount").textContent=previousCards.length+"장";
+  const grid=$("previousSeriesGrid");
+  if(!previousCards.length){
+    grid.innerHTML='<p class="previous-series-empty">아직 등록한 카드가 없어요.</p>';
+    return;
+  }
+  grid.innerHTML="";
+  previousCards.forEach(card=>{
+    const article=document.createElement("article");
+    article.className="previous-series-card";
+    const image=document.createElement("img");
+    image.className="previous-series-card-image";
+    image.alt=card.name;
+    const url=URL.createObjectURL(card.image);
+    previousImageUrls.push(url);
+    image.src=url;
+    const info=document.createElement("div");
+    info.className="previous-series-card-info";
+    const name=document.createElement("div");
+    name.className="previous-series-card-name";
+    name.textContent=card.name;
+    const category=document.createElement("span");
+    category.className="previous-series-card-category";
+    category.textContent=card.category;
+    const remove=document.createElement("button");
+    remove.type="button";
+    remove.className="previous-series-delete";
+    remove.textContent="×";
+    remove.setAttribute("aria-label",card.name+" 삭제");
+    remove.addEventListener("click",async()=>{
+      if(!confirm("「"+card.name+"」 카드를 삭제할까요?"))return;
+      try{await deletePreviousCard(card.id);previousCards=previousCards.filter(item=>item.id!==card.id);renderPreviousCards();}
+      catch(error){alert("카드를 삭제하지 못했어요.");}
+    });
+    info.append(name,category);
+    article.append(image,info,remove);
+    grid.appendChild(article);
+  });
+}
 function filtered(){
   const q=$( "search").value.trim().toLowerCase();
   const cat=$("category").value,type=$("type").value,grade=$("grade").value,season=$("season").value;
@@ -573,6 +672,45 @@ $("unownedOnly").addEventListener("click",()=>{
 });
 $("cardListTab").addEventListener("click",()=>setView("list"));
 $("coordinateTab").addEventListener("click",()=>setView("coordinate"));
+$("previousSeriesTab").addEventListener("click",()=>setView("previous"));
+$("previousCategoryButtons").addEventListener("click",event=>{
+  const button=event.target.closest("[data-category]");
+  if(!button)return;
+  previousCategory=button.dataset.category;
+  $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(item=>{
+    const active=item===button;
+    item.classList.toggle("active",active);
+    item.setAttribute("aria-pressed",String(active));
+  });
+});
+$("previousCardImage").addEventListener("change",()=>{
+  const file=$("previousCardImage").files[0];
+  $("previousImageLabel").textContent=file?file.name:"카드 이미지 추가";
+});
+$("previousCardForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  const file=$("previousCardImage").files[0];
+  const name=$("previousCardName").value.trim();
+  if(!file||!name){alert("이미지와 카드 이름을 입력해 주세요.");return;}
+  if(!file.type.startsWith("image/")){alert("이미지 파일을 선택해 주세요.");return;}
+  const submit=$("previousCardForm").querySelector('[type="submit"]');
+  submit.disabled=true;
+  try{
+    const card={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(36).slice(2)),name,category:previousCategory,image:file,createdAt:Date.now()};
+    await savePreviousCard(card);
+    previousCards.unshift(card);
+    $("previousCardForm").reset();
+    $("previousImageLabel").textContent="카드 이미지 추가";
+    previousCategory="원피스";
+    $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(button=>{
+      const active=button.dataset.category===previousCategory;
+      button.classList.toggle("active",active);
+      button.setAttribute("aria-pressed",String(active));
+    });
+    renderPreviousCards();
+  }catch(error){alert("카드를 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.");}
+  finally{submit.disabled=false;}
+});
 $("saveCoordinate").addEventListener("click",()=>{
   const ids=currentCoordinateIds();
   if(!ids.some(Boolean)){alert("저장할 카드를 먼저 선택해 주세요.");return;}
@@ -600,5 +738,5 @@ grid.addEventListener("touchend",e=>{
 
 ["search","category","type","grade","season"].forEach(id=>$(id).addEventListener("input",render));
 window.addEventListener("resize",updateMobilePager);
-try{setView(localStorage.getItem("aikatsuEncoreCurrentView")==="coordinate"?"coordinate":"list");}catch(e){setView("list");}
+try{const savedView=localStorage.getItem("aikatsuEncoreCurrentView");setView(savedView==="coordinate"||savedView==="previous"?savedView:"list");}catch(e){setView("list");}
 loadData();

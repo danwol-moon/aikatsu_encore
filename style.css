@@ -269,3 +269,33 @@ main{padding:8px 18px}
     max-height:280px;
   }
 }
+
+
+/* 코디 저장 제목: 이름, 보유 수, 수정 안내를 한 줄로 표시 */
+.saved-coordinate-title{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 6px;font-size:21px;line-height:1.35}
+.saved-coordinate-name{font-size:21px;font-weight:700;white-space:nowrap}
+.saved-coordinate-meta{font-family:var(--body);font-size:12px;font-weight:400;color:var(--cover-ink)}
+.saved-coordinate-title .saved-coordinate-edit-hint{color:#888}
+.coordinate-placeholder-image,
+.saved-coordinate-empty-image{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:1/1.38;box-sizing:border-box;
+  border:1px dashed var(--pocket-edge);border-radius:10px;
+  background:var(--pocket);color:var(--ink-soft);
+  font-family:Arial,sans-serif;font-size:clamp(64px,9vw,110px);font-weight:300;line-height:1;
+}
+.coordinate-preview.empty{display:block;min-height:0;padding:0;border:0;background:transparent}
+.coordinate-preview.empty .coordinate-placeholder-image{max-width:220px;min-height:260px;margin:0 auto}
+.coordinate-preview.empty .coordinate-card-name{margin-top:8px;color:var(--ink-soft);font-size:13px}
+.saved-coordinate-empty-image{margin:0 0 5px;border:0;border-radius:6px;font-size:clamp(34px,5vw,70px)}
+.coordinate-option-none{min-height:64px}
+.coordinate-option-x{display:flex;align-items:center;justify-content:center;flex:0 0 48px;height:64px;border-radius:5px;background:var(--pocket);color:var(--ink-soft);font-size:40px;font-weight:300}
+.coordinate-picker-unavailable{font-weight:700;color:var(--ink-soft)}
+@media(max-width:600px){
+  .saved-coordinate-title{gap:0 4px}
+  .saved-coordinate-name{font-size:18px}
+  .saved-coordinate-meta{font-size:10px}
+  .coordinate-preview.empty .coordinate-placeholder-image{min-height:220px;font-size:72px}
+  .coordinate-option-none{min-height:52px}
+  .coordinate-option-x{flex-basis:38px;height:52px;font-size:32px}
+}

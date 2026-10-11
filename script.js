@@ -187,9 +187,10 @@ function buildCoordinateOptions(){
     none.className="coordinate-option coordinate-option-none";
     none.innerHTML='<span class="coordinate-option-x" aria-hidden="true">X</span><span class="coordinate-option-name">선택 없음</span>';
     none.addEventListener("click",()=>{
+      const previousTop=getCoordinateCard(coordinateSlots[0]);
       slot.selected="";
-      if(slot.category==="상의"&&isOnePiece(getCoordinateCard(slot)))coordinateSlots[1].selected="";
-      if(slot.category==="하의"&&isOnePiece(getCoordinateCard(coordinateSlots[0])))coordinateSlots[0].selected="";
+      if(slot.category==="상의"&&isOnePiece(previousTop))coordinateSlots[1].selected="";
+      if(slot.category==="하의"&&isOnePiece(previousTop))coordinateSlots[0].selected="";
       coordinateSlots.forEach(other=>{
         const card=getCoordinateCard(other);
         updateCoordinatePicker(other,card);
@@ -230,7 +231,11 @@ function buildCoordinateOptions(){
       $(slot.picker).setAttribute("aria-expanded",String(!open));
     });
   });
-  coordinateSlots.forEach(slot=>{slot.selected="";});
+  coordinateSlots.forEach(slot=>{
+    slot.selected="";
+    updateCoordinatePicker(slot,null);
+    renderCoordinatePreview(slot);
+  });
   renderSavedCoordinates();
 }
 function getCoordinateCard(slot){

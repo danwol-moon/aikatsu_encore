@@ -336,6 +336,7 @@ function renderSavedCoordinates(){
 }
 function setView(view){
   const isCoordinate=view==="coordinate";
+  try{localStorage.setItem("aikatsuEncoreCurrentView",isCoordinate?"coordinate":"list");}catch(e){}
   $("controls").hidden=isCoordinate;
   $("mainContent").hidden=isCoordinate;
   $("coordinateView").hidden=!isCoordinate;
@@ -599,4 +600,5 @@ grid.addEventListener("touchend",e=>{
 
 ["search","category","type","grade","season"].forEach(id=>$(id).addEventListener("input",render));
 window.addEventListener("resize",updateMobilePager);
+try{setView(localStorage.getItem("aikatsuEncoreCurrentView")==="coordinate"?"coordinate":"list");}catch(e){setView("list");}
 loadData();

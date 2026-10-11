@@ -261,7 +261,7 @@ function renderCoordinatePreview(slot){
     preview.className="coordinate-preview empty"+(unavailable?" unavailable":" no-selection");
     preview.innerHTML=unavailable
       ? `<div class="coordinate-placeholder-image" aria-hidden="true">X</div><div class="coordinate-card-name">선택 불가</div>`
-      : `<div class="coordinate-placeholder-image" aria-hidden="true">X</div><div class="coordinate-card-name">${esc(slot.category+" 선택 없음")}</div>`;
+      : `<div class="coordinate-placeholder-image" aria-hidden="true"></div><div class="coordinate-card-name">${esc(slot.category+" 선택 없음")}</div>`;
     return;
   }
   preview.className="coordinate-preview";

@@ -359,3 +359,24 @@ main{padding:8px 18px}
 /* 이전 시리즈 카드: 이미지 URL 입력 */
 #previousCardImageUrl{width:100%;box-sizing:border-box;border:1px solid var(--pocket-edge);border-radius:10px;padding:12px 14px;background:#fff;color:var(--ink);font:inherit}
 .previous-image-url-hint{margin:-4px 0 4px;font-size:12px;color:var(--ink-soft);line-height:1.5}
+
+/* 이전 시리즈 카드 번호·수정 기능 */
+#previousCardNumber{width:100%;box-sizing:border-box;border:1px solid var(--pocket-edge);border-radius:10px;padding:12px 14px;background:#fff;color:var(--ink);font:inherit}
+.previous-form-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:auto}
+.previous-add-button{margin-top:0}
+.previous-cancel-button{border:1px solid var(--pocket-edge);border-radius:999px;padding:11px 18px;background:#fff;color:var(--cover-ink);font-family:var(--display);font-size:15px;cursor:pointer}
+.previous-series-card-number{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;overflow-wrap:anywhere}
+.previous-series-actions{position:absolute;top:7px;right:7px;display:flex;gap:5px}
+.previous-series-actions button{height:30px;border:0;border-radius:999px;background:rgba(255,255,255,.95);color:#8a5366;cursor:pointer;box-shadow:0 1px 5px #0002}
+.previous-series-actions .previous-series-edit{padding:0 10px;font-size:12px;font-weight:700}
+.previous-series-actions .previous-series-delete{position:static;width:30px;padding:0;font-size:20px;line-height:1}
+@media(max-width:600px){
+  .previous-form-actions{width:100%}
+  .previous-form-actions button{flex:1}
+  .previous-cancel-button{font-size:13px;padding:10px 12px}
+  .previous-series-card-number{font-size:10px}
+  .previous-series-actions{top:5px;right:5px;gap:3px}
+  .previous-series-actions .previous-series-edit{padding:0 8px;font-size:11px}
+  .previous-series-actions button{height:27px}
+  .previous-series-actions .previous-series-delete{width:27px}
+}

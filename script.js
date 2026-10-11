@@ -185,7 +185,7 @@ function buildCoordinateOptions(){
     const none=document.createElement("button");
     none.type="button";
     none.className="coordinate-option coordinate-option-none";
-    none.innerHTML='<span class="coordinate-option-x" aria-hidden="true">X</span><span class="coordinate-option-name">선택 없음</span>';
+    none.innerHTML='<span class="coordinate-option-name">선택 없음</span>';
     none.addEventListener("click",()=>{
       const previousTop=getCoordinateCard(coordinateSlots[0]);
       slot.selected="";
@@ -257,8 +257,11 @@ function updateCoordinatePicker(slot,card){
 function renderCoordinatePreview(slot){
   const preview=$(slot.preview),card=getCoordinateCard(slot);
   if(!card){
-    preview.className="coordinate-preview empty";
-    preview.innerHTML=`<div class="coordinate-placeholder-image" aria-hidden="true">X</div><div class="coordinate-card-name">${esc(slot.placeholder)}</div>`;
+    const unavailable=slot.category==="하의"&&isOnePiece(getCoordinateCard(coordinateSlots[0]));
+    preview.className="coordinate-preview empty"+(unavailable?" unavailable":" no-selection");
+    preview.innerHTML=unavailable
+      ? `<div class="coordinate-placeholder-image" aria-hidden="true">X</div><div class="coordinate-card-name">선택 불가</div>`
+      : `<div class="coordinate-placeholder-image" aria-hidden="true"></div><div class="coordinate-card-name">${esc(slot.category+" 선택 없음")}</div>`;
     return;
   }
   preview.className="coordinate-preview";
@@ -313,7 +316,7 @@ function renderSavedCoordinates(){
         item.innerHTML=`${isAccessory(card)
           ? `<div class="saved-coordinate-image-frame coordinate-accessory-frame"><img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="coordinate-accessory-image ${isOwned(card)?"":"unowned-image"}"></div>`
           : `<img src="${esc(card.front)}" alt="${esc(card.nameKo||card.nameJa||"카드")}" class="${isOwned(card)?"":"unowned-image"}">`}<span>${esc(card.nameKo||card.nameJa||"이름 없음")}</span>`;
-      }else item.innerHTML='<div class="saved-coordinate-image-frame saved-coordinate-empty-image" aria-label="선택 없음"><span>X</span></div><span>선택 없음</span>';
+      }else item.innerHTML='<div class="saved-coordinate-image-frame saved-coordinate-empty-image" aria-label="선택 없음"></div><span>선택 없음</span>';
       cardsRow.appendChild(item);
     });
     const actions=document.createElement("div");

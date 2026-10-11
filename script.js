@@ -355,7 +355,7 @@ function setView(view){
 
 const PREVIOUS_DB_NAME="aikatsuEncorePreviousCards";
 const PREVIOUS_DB_STORE="cards";
-let previousCategory="원피스";
+let previousCategory="상의";
 let previousCards=[];
 let previousImageUrls=[];
 function openPreviousCardsDB(){
@@ -415,12 +415,23 @@ function renderPreviousCards(){
     return;
   }
   grid.innerHTML="";
-  previousCards.forEach(card=>{
+  const categoryOrder=["상의","하의","원피스","슈즈","액세서리","악세서리"];
+  const orderedCards=[...previousCards].sort((a,b)=>{
+    const categoryName=value=>value==="악세서리"?"액세서리":value;
+    const ra=categoryOrder.indexOf(categoryName(a.category));
+    const rb=categoryOrder.indexOf(categoryName(b.category));
+    const rankA=ra<0?categoryOrder.length:ra;
+    const rankB=rb<0?categoryOrder.length:rb;
+    return rankA-rankB || (b.createdAt||0)-(a.createdAt||0);
+  });
+  orderedCards.forEach(card=>{
     const article=document.createElement("article");
     article.className="previous-series-card";
     const image=document.createElement("img");
     image.className="previous-series-card-image";
     image.alt=card.name;
+    // 외부 사이트의 핫링크 차단을 피하도록 Referer를 보내지 않습니다.
+    image.referrerPolicy="no-referrer";
     if(card.image instanceof Blob){
       const url=URL.createObjectURL(card.image);
       previousImageUrls.push(url);
@@ -720,7 +731,7 @@ $("previousCardForm").addEventListener("submit",async event=>{
     previousCards.unshift(card);
     $("previousCardForm").reset();
     $("previousImageLabel").textContent="카드 이미지 추가";
-    previousCategory="원피스";
+    previousCategory="상의";
     $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(button=>{
       const active=button.dataset.category===previousCategory;
       button.classList.toggle("active",active);

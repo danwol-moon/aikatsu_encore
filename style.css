@@ -286,7 +286,7 @@ main{padding:8px 18px}
 }
 .coordinate-preview.empty{display:block;min-height:0;padding:0;border:0;background:transparent}
 .coordinate-preview.empty .coordinate-placeholder-image{max-width:220px;min-height:260px;margin:0 auto}
-.coordinate-preview.empty .coordinate-card-name{margin-top:8px;color:var(--ink-soft);font-size:13px}
+.coordinate-preview.empty .coordinate-card-name{margin-top:8px;color:var(--ink-soft)}
 .saved-coordinate-empty-image{margin:0 0 5px;border:0;border-radius:6px;font-size:clamp(34px,5vw,70px)}
 .coordinate-option-none{min-height:64px}
 .coordinate-option-x{display:flex;align-items:center;justify-content:center;flex:0 0 48px;height:64px;border-radius:5px;background:var(--pocket);color:var(--ink-soft);font-size:40px;font-weight:300}

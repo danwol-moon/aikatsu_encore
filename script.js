@@ -407,6 +407,25 @@ async function deletePreviousCard(id){
   });
   db.close();
 }
+let previousPreviewObjectUrl=null;
+function setPreviousImagePreview(source){
+  const preview=$("previousImagePreview");
+  if(previousPreviewObjectUrl){
+    URL.revokeObjectURL(previousPreviewObjectUrl);
+    previousPreviewObjectUrl=null;
+  }
+  if(source instanceof Blob){
+    previousPreviewObjectUrl=URL.createObjectURL(source);
+    preview.src=previousPreviewObjectUrl;
+    preview.hidden=false;
+  }else if(typeof source==="string"&&source.trim()){
+    preview.src=source;
+    preview.hidden=false;
+  }else{
+    preview.removeAttribute("src");
+    preview.hidden=true;
+  }
+}
 function renderPreviousCards(){
   previousImageUrls.forEach(url=>URL.revokeObjectURL(url));
   previousImageUrls=[];
@@ -439,6 +458,7 @@ function renderPreviousCards(){
     article.className="previous-series-card";
     const image=document.createElement("img");
     image.className="previous-series-card-image";
+    if(["액세서리","악세서리"].includes(card.category))image.classList.add("previous-accessory-card-image");
     image.alt=card.name;
     // 외부 사이트의 핫링크 차단을 피하도록 Referer를 보내지 않습니다.
     image.referrerPolicy="no-referrer";
@@ -488,7 +508,10 @@ function renderPreviousCards(){
     });
     info.append(number,name,category,type);
     actions.append(edit,remove);
-    article.append(image,info,actions);
+    const imageFrame=document.createElement("div");
+    imageFrame.className="previous-series-card-image-frame";
+    imageFrame.appendChild(image);
+    article.append(imageFrame,info,actions);
     grid.appendChild(article);
   });
 }
@@ -741,18 +764,27 @@ $("previousTypeButtons").addEventListener("click",event=>{
 $("previousCardImage").addEventListener("change",()=>{
   const file=$("previousCardImage").files[0];
   $("previousImageLabel").textContent=file?file.name:"카드 이미지 추가";
-  if(file)$("previousCardImageUrl").value="";
+  if(file){
+    $("previousCardImageUrl").value="";
+    setPreviousImagePreview(file);
+  }else{
+    setPreviousImagePreview("");
+  }
 });
 $("previousCardImageUrl").addEventListener("input",()=>{
   if($("previousCardImageUrl").value.trim()){
     $("previousCardImage").value="";
     $("previousImageLabel").textContent="카드 이미지 추가";
+    setPreviousImagePreview($("previousCardImageUrl").value.trim());
+  }else if(!editingPreviousCardId){
+    setPreviousImagePreview("");
   }
 });
 function resetPreviousCardForm(){
   editingPreviousCardId=null;
   $("previousCardForm").reset();
   $("previousImageLabel").textContent="카드 이미지 추가";
+  setPreviousImagePreview("");
   $("previousCardSubmit").textContent="카드 추가";
   $("previousCardCancelEdit").hidden=true;
   previousCategory="상의";
@@ -783,6 +815,7 @@ function startEditingPreviousCard(id){
   });
   $("previousCardImage").value="";
   $("previousImageLabel").textContent=card.imageUrl?"기존 이미지 주소 사용 중":"이미지 변경 시 파일을 선택해 주세요";
+  setPreviousImagePreview(card.image instanceof Blob?card.image:(card.imageUrl||""));
   previousCategory=card.category||"상의";
   $("previousCategoryButtons").querySelectorAll("[data-category]").forEach(button=>{
     const active=button.dataset.category===previousCategory;

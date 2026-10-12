@@ -3,6 +3,7 @@ const SHEET_GID="1943463274";
 const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A2:H`;
 
 let cards=[];
+let separatorCard=null;
 let mobilePage=0;
 let mobilePageCount=0;
 let touchStartX=0;
@@ -67,12 +68,15 @@ async function loadData(){
     if(!res.ok) throw new Error("Google Sheets 응답 오류: "+res.status);
     const text=await res.text();
     const json=JSON.parse(text.substring(text.indexOf("{"),text.lastIndexOf("}")+1));
-    cards=(json.table.rows||[]).map(r=>{
+    const sheetRows=(json.table.rows||[]).map((r,index)=>{
       const c=r.c||[];
       const v=i=>c[i]?.v??"";
-      return {id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
-    // ID가 있어도 앞면과 뒷면 이미지가 모두 있는 카드만 사이트에 표시합니다.
-    }).filter(x=>hasImageUrl(x.front) && hasImageUrl(x.back));
+      return {sheetRow:index+2,id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
+    });
+    // 483행은 타입 구분선에 사용할 이미지 전용 행으로 따로 보관합니다.
+    separatorCard=sheetRows.find(x=>x.sheetRow===483)||null;
+    // ID가 있어도 앞면과 뒷면 이미지가 모두 있는 카드만 표시하며, 구분선 행은 일반 카드에서 제외합니다.
+    cards=sheetRows.filter(x=>x.sheetRow!==483 && hasImageUrl(x.front) && hasImageUrl(x.back));
     buildFilters();
     updateCollectionCount();
     render();
@@ -558,7 +562,16 @@ function render(){
     const listSeason=seasonForId(card.id);
     const seasonChanged=listSeason!==previousListSeason;
     const typeChanged=listType!==previousListType;
+    const insertTypeDivider=index>0&&!seasonChanged&&listSeason!=="프로모션"&&typeChanged;
     if(index===0||seasonChanged||(listSeason!=="프로모션"&&typeChanged))el.classList.add("card-type-row-start");
+    if(insertTypeDivider&&separatorCard){
+      const divider=document.createElement("div");
+      divider.className="type-divider-images";
+      divider.setAttribute("aria-hidden","true");
+      divider.innerHTML=[separatorCard.front,separatorCard.back].filter(hasImageUrl)
+        .map(src=>'<img src="'+esc(src)+'" alt="" loading="lazy">').join("");
+      page.appendChild(divider);
+    }
     previousListType=listType;
     previousListSeason=listSeason;
     const accessory=isAccessory(card);

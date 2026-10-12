@@ -437,7 +437,13 @@ function renderPreviousCards(){
   }
   grid.innerHTML="";
   const categoryOrder=["상의","하의","원피스","슈즈","액세서리","악세서리"];
+  const typeOrder=["큐트","쿨","섹시","팝"];
   const orderedCards=[...previousCards].sort((a,b)=>{
+    const typeA=typeOrder.indexOf(a.type||"");
+    const typeB=typeOrder.indexOf(b.type||"");
+    const rankTypeA=typeA<0?typeOrder.length:typeA;
+    const rankTypeB=typeB<0?typeOrder.length:typeB;
+    if(rankTypeA!==rankTypeB)return rankTypeA-rankTypeB;
     const numberA=String(a.number||"").trim();
     const numberB=String(b.number||"").trim();
     if(numberA&&numberB){
@@ -453,9 +459,13 @@ function renderPreviousCards(){
     const rankB=rb<0?categoryOrder.length:rb;
     return rankA-rankB || (b.createdAt||0)-(a.createdAt||0);
   });
+  let previousRenderedType=null;
   orderedCards.forEach(card=>{
     const article=document.createElement("article");
     article.className="previous-series-card";
+    const renderedType=card.type||"타입 미등록";
+    if(renderedType!==previousRenderedType)article.classList.add("previous-type-row-start");
+    previousRenderedType=renderedType;
     const image=document.createElement("img");
     image.className="previous-series-card-image";
     if(["액세서리","악세서리"].includes(card.category))image.classList.add("previous-accessory-card-image");

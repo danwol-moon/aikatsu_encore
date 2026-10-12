@@ -535,21 +535,15 @@ function render(){
   const grid=$("grid");
   grid.innerHTML="";
   mobilePage=0;
-  const typeOrder=["큐트","쿨","섹시","팝"];
-  const canonicalType=value=>{
-    const key=normalize(value);
-    if(key==="큐트"||key==="큐티")return "큐트";
-    return key;
-  };
-  const typeRank=value=>{
-    const rank=typeOrder.indexOf(canonicalType(value));
-    return rank<0?typeOrder.length:rank;
-  };
-  const list=filtered().map((card,originalIndex)=>({card,originalIndex}))
-    .sort((a,b)=>typeRank(a.card.type)-typeRank(b.card.type)||a.originalIndex-b.originalIndex)
-    .map(item=>item.card);
+  // 기존 카드 목록의 순서는 유지하고, 탄/프로모션 또는 타입이 바뀔 때만 새 행을 시작합니다.
+  const list=filtered();
   visibleCards=list;
   let previousListType=null;
+  let previousListSeason=null;
+  const canonicalType=value=>{
+    const key=normalize(value);
+    return key==="큐트"||key==="큐티"?"큐트":key;
+  };
 
   list.forEach((card,index)=>{
     if(index%4===0){
@@ -561,8 +555,10 @@ function render(){
     const el=document.createElement("article");
     el.className="card"+(isOwned(card)?" owned-card":" unowned-card");
     const listType=canonicalType(card.type);
-    if(index===0||listType!==previousListType)el.classList.add("card-type-row-start");
+    const listSeason=seasonForId(card.id);
+    if(index===0||listSeason!==previousListSeason||listType!==previousListType)el.classList.add("card-type-row-start");
     previousListType=listType;
+    previousListSeason=listSeason;
     const accessory=isAccessory(card);
     const heart=isWishlisted(card);
     el.innerHTML=`<div class="card-image${accessory?" accessory-card":""}">

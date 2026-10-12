@@ -431,3 +431,7 @@ main{padding:8px 18px}
   .previous-field-group input{padding:10px 9px;font-size:13px}
   .previous-form-actions .previous-add-button{padding:10px 17px;font-size:14px}
 }
+
+
+/* 타입이 바뀌면 해당 카드부터 새 행에서 시작 */
+.previous-series-card.previous-type-row-start{grid-column:1}

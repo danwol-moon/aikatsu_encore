@@ -1,8 +1,6 @@
 const SHEET_ID="1SL3XZqx5KBbCqUyPcN62YuGSnctC7SHGdHI43aFFs24";
 const SHEET_GID="1943463274";
-const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A2:H482`;
-const endpointAfterSeparator=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A484:H`;
-const separatorEndpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A483:H483`;
+const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A2:H`;
 
 let cards=[];
 let separatorCard=null;
@@ -68,27 +66,29 @@ function hasImageUrl(value){
 
 async function loadData(){
   try{
-    const [resBefore,resAfter,resSeparator]=await Promise.all([
-      fetch(endpoint),fetch(endpointAfterSeparator),fetch(separatorEndpoint)
-    ]);
-    if(!resBefore.ok||!resAfter.ok||!resSeparator.ok)throw new Error("Google Sheets 응답 오류");
-    const parseResponse=async res=>{
-      const text=await res.text();
-      return JSON.parse(text.substring(text.indexOf("{"),text.lastIndexOf("}")+1));
-    };
-    const [beforeJson,afterJson,separatorJson]=await Promise.all([
-      parseResponse(resBefore),parseResponse(resAfter),parseResponse(resSeparator)
-    ]);
-    const parseRows=json=>(json.table.rows||[]).map(r=>{
-      const c=r.c||[];
+    const res=await fetch(endpoint);
+    if(!res.ok)throw new Error("Google Sheets 응답 오류 (HTTP "+res.status+")");
+    const responseText=await res.text();
+    const jsonStart=responseText.indexOf("{");
+    const jsonEnd=responseText.lastIndexOf("}");
+    if(jsonStart<0||jsonEnd<jsonStart)throw new Error("Google Sheets에서 JSON 데이터를 받지 못했습니다. 시트 공개 설정 또는 주소를 확인해주세요.");
+    const json=JSON.parse(responseText.slice(jsonStart,jsonEnd+1));
+    if(json.status==="error")throw new Error((json.errors||[]).map(e=>e.detailed_message||e.message).join(" / ")||"Google Sheets 조회 오류");
+    if(!json.table||!Array.isArray(json.table.rows))throw new Error("Google Sheets 응답에 표 데이터가 없습니다. 시트 ID와 탭 GID를 확인해주세요.");
+    const parseRow=r=>{
+      const c=r?.c||[];
       const v=i=>c[i]?.v??"";
       return {id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
-    });
-    // 483행은 별도 요청으로 읽어 구분 이미지 전용으로 사용하며, 일반 카드 목록에는 포함하지 않습니다.
-    const separatorRows=parseRows(separatorJson);
-    separatorCard=separatorRows.find(x=>hasImageUrl(x.front))||null;
-    cards=[...parseRows(beforeJson),...parseRows(afterJson)]
-      .filter(x=>hasImageUrl(x.front)&&hasImageUrl(x.back));
+    };
+    // A2:H 전체를 한 번에 요청합니다. 483행(배열 인덱스 481)은 구분 이미지 전용입니다.
+    const rows=json.table.rows;
+    separatorCard=rows[481]?parseRow(rows[481]):null;
+    if(separatorCard&&!hasImageUrl(separatorCard.front))separatorCard=null;
+    cards=rows
+      .map((row,index)=>({card:parseRow(row),sheetRow:index+2}))
+      .filter(item=>item.sheetRow!==483)
+      .map(item=>item.card)
+      .filter(card=>hasImageUrl(card.front)&&hasImageUrl(card.back));
     buildFilters();
     updateCollectionCount();
     render();
@@ -96,7 +96,7 @@ async function loadData(){
   }catch(e){
     $("loading").hidden=true;
     $("error").hidden=false;
-    $("error").textContent="데이터를 불러오지 못했습니다. Google Sheets 공유 설정과 이미지 URL을 확인해주세요. ("+e.message+")";
+    $("error").textContent="데이터를 불러오지 못했습니다. ("+e.message+")";
   }
 }
 function fillSelect(id,values,order=[]){

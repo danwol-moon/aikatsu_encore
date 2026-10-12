@@ -1,6 +1,8 @@
 const SHEET_ID="1SL3XZqx5KBbCqUyPcN62YuGSnctC7SHGdHI43aFFs24";
 const SHEET_GID="1943463274";
-const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A2:H`;
+const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A2:H482`;
+const endpointAfterSeparator=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A484:H`;
+const separatorEndpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A483:H483`;
 
 let cards=[];
 let separatorCard=null;
@@ -56,8 +58,8 @@ function normalize(v){
 
 function isAccessory(card){
   const isAccessoryLabel=value=>["악세서리","액세서리"].includes(normalize(value));
-  // 시트 표기가 '액세서리' 또는 '악세서리'인 경우 모두 액세서리로 처리합니다.
-  return isAccessoryLabel(card.type) || isAccessoryLabel(card.category) || normalize(card.id)==="e1-59";
+  // 시트의 타입/분류 표기를 기준으로 액세서리를 판별합니다.
+  return isAccessoryLabel(card.type) || isAccessoryLabel(card.category);
 }
 
 function hasImageUrl(value){
@@ -66,19 +68,27 @@ function hasImageUrl(value){
 
 async function loadData(){
   try{
-    const res=await fetch(endpoint);
-    if(!res.ok) throw new Error("Google Sheets 응답 오류: "+res.status);
-    const text=await res.text();
-    const json=JSON.parse(text.substring(text.indexOf("{"),text.lastIndexOf("}")+1));
-    const sheetRows=(json.table.rows||[]).map((r,index)=>{
+    const [resBefore,resAfter,resSeparator]=await Promise.all([
+      fetch(endpoint),fetch(endpointAfterSeparator),fetch(separatorEndpoint)
+    ]);
+    if(!resBefore.ok||!resAfter.ok||!resSeparator.ok)throw new Error("Google Sheets 응답 오류");
+    const parseResponse=async res=>{
+      const text=await res.text();
+      return JSON.parse(text.substring(text.indexOf("{"),text.lastIndexOf("}")+1));
+    };
+    const [beforeJson,afterJson,separatorJson]=await Promise.all([
+      parseResponse(resBefore),parseResponse(resAfter),parseResponse(resSeparator)
+    ]);
+    const parseRows=json=>(json.table.rows||[]).map(r=>{
       const c=r.c||[];
       const v=i=>c[i]?.v??"";
-      return {sheetRow:index+2,id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
+      return {id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
     });
-    // 483행은 타입 구분선에 사용할 이미지 전용 행으로 따로 보관합니다.
-    separatorCard=sheetRows.find(x=>x.sheetRow===483)||null;
-    // ID가 있어도 앞면과 뒷면 이미지가 모두 있는 카드만 표시하며, 구분선 행은 일반 카드에서 제외합니다.
-    cards=sheetRows.filter(x=>x.sheetRow!==483 && hasImageUrl(x.front) && hasImageUrl(x.back));
+    // 483행은 별도 요청으로 읽어 구분 이미지 전용으로 사용하며, 일반 카드 목록에는 포함하지 않습니다.
+    const separatorRows=parseRows(separatorJson);
+    separatorCard=separatorRows.find(x=>hasImageUrl(x.front))||null;
+    cards=[...parseRows(beforeJson),...parseRows(afterJson)]
+      .filter(x=>hasImageUrl(x.front)&&hasImageUrl(x.back));
     buildFilters();
     updateCollectionCount();
     render();
@@ -89,7 +99,6 @@ async function loadData(){
     $("error").textContent="데이터를 불러오지 못했습니다. Google Sheets 공유 설정과 이미지 URL을 확인해주세요. ("+e.message+")";
   }
 }
-
 function fillSelect(id,values,order=[]){
   const el=$(id), first=el.options[0];
   el.innerHTML="";
@@ -552,6 +561,21 @@ function render(){
   };
 
   list.forEach((card,index)=>{
+    const listType=canonicalType(card.type);
+    const listSeason=seasonForId(card.id);
+    const seasonChanged=listSeason!==previousListSeason;
+    const typeChanged=listType!==previousListType;
+    const insertTypeDivider=index>0&&!seasonChanged&&listSeason!=="프로모션"&&previousListSeason!=="프로모션"&&typeChanged;
+    // 구분 이미지는 타입이 끝난 직후, 직전 카드가 속한 페이지에 추가합니다.
+    if(insertTypeDivider&&separatorCard&&grid.lastElementChild){
+      const divider=document.createElement("div");
+      divider.className="type-divider-images";
+      divider.setAttribute("aria-hidden","true");
+      divider.innerHTML=hasImageUrl(separatorCard.front)
+        ? '<img src="'+esc(separatorCard.front)+'" alt="" loading="lazy">'
+        : "";
+      grid.lastElementChild.appendChild(divider);
+    }
     if(index%4===0){
       const page=document.createElement("div");
       page.className="card-page";
@@ -560,21 +584,7 @@ function render(){
     const page=grid.lastElementChild;
     const el=document.createElement("article");
     el.className="card"+(isOwned(card)?" owned-card":" unowned-card");
-    const listType=canonicalType(card.type);
-    const listSeason=seasonForId(card.id);
-    const seasonChanged=listSeason!==previousListSeason;
-    const typeChanged=listType!==previousListType;
-    const insertTypeDivider=index>0&&!seasonChanged&&listSeason!=="프로모션"&&typeChanged;
     if(index===0||seasonChanged||(listSeason!=="프로모션"&&typeChanged))el.classList.add("card-type-row-start");
-    if(insertTypeDivider&&separatorCard){
-      const divider=document.createElement("div");
-      divider.className="type-divider-images";
-      divider.setAttribute("aria-hidden","true");
-      divider.innerHTML=hasImageUrl(separatorCard.front)
-        ? '<img src="'+esc(separatorCard.front)+'" alt="" loading="lazy">'
-        : "";
-      page.appendChild(divider);
-    }
     previousListType=listType;
     previousListSeason=listSeason;
     const accessory=isAccessory(card);

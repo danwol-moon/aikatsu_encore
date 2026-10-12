@@ -535,7 +535,7 @@ function render(){
   const grid=$("grid");
   grid.innerHTML="";
   mobilePage=0;
-  // 기존 카드 목록의 순서는 유지하고, 탄/프로모션 또는 타입이 바뀔 때만 새 행을 시작합니다.
+  // 일반 시즌은 탄/타입이 바뀔 때 새 행을 시작하고, 프로모션은 첫 카드만 새 행에서 시작합니다.
   const list=filtered();
   visibleCards=list;
   let previousListType=null;
@@ -556,7 +556,9 @@ function render(){
     el.className="card"+(isOwned(card)?" owned-card":" unowned-card");
     const listType=canonicalType(card.type);
     const listSeason=seasonForId(card.id);
-    if(index===0||listSeason!==previousListSeason||listType!==previousListType)el.classList.add("card-type-row-start");
+    const seasonChanged=listSeason!==previousListSeason;
+    const typeChanged=listType!==previousListType;
+    if(index===0||seasonChanged||(listSeason!=="프로모션"&&typeChanged))el.classList.add("card-type-row-start");
     previousListType=listType;
     previousListSeason=listSeason;
     const accessory=isAccessory(card);

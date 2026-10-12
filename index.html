@@ -38,10 +38,16 @@
         <label class="previous-name-label" for="previousCardImageUrl">또는 이미지 주소</label>
         <input id="previousCardImageUrl" type="url" placeholder="https://example.com/card.jpg" autocomplete="url">
         <p class="previous-image-url-hint">이미지 파일을 선택하거나, 이미지가 직접 열리는 주소를 입력해 주세요.</p>
-        <label class="previous-name-label" for="previousCardNumber">카드 번호</label>
-        <input id="previousCardNumber" type="text" maxlength="50" placeholder="SP-001" autocomplete="off">
-        <label class="previous-name-label" for="previousCardName">카드 이름</label>
-        <input id="previousCardName" type="text" maxlength="100" placeholder="카드 이름을 입력해 주세요" required>
+        <div class="previous-number-name-row">
+          <div class="previous-field-group previous-number-group">
+            <label class="previous-name-label" for="previousCardNumber">카드 번호</label>
+            <input id="previousCardNumber" type="text" maxlength="50" placeholder="SP-001" autocomplete="off">
+          </div>
+          <div class="previous-field-group previous-card-name-group">
+            <label class="previous-name-label" for="previousCardName">카드 이름</label>
+            <input id="previousCardName" type="text" maxlength="100" placeholder="카드 이름을 입력해 주세요" required>
+          </div>
+        </div>
         <div class="previous-button-groups">
           <div class="previous-button-group">
             <div class="previous-category-label">카테고리 선택</div>

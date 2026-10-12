@@ -417,3 +417,17 @@ main{padding:8px 18px}
   .previous-form-actions{width:auto;flex-wrap:nowrap}
   .previous-form-actions button{flex:0 0 auto;font-size:12px;padding:8px 10px}
 }
+
+
+/* 카드 번호와 이름은 한 줄에 배치하고 입력 칸 비율은 1:2로 유지 */
+.previous-number-name-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:10px;width:100%;min-width:0}
+.previous-field-group{display:flex;flex-direction:column;gap:7px;min-width:0}
+.previous-field-group input{width:100%;min-width:0;box-sizing:border-box;border:1px solid var(--pocket-edge);border-radius:10px;padding:12px 14px;background:#fff;color:var(--ink);font:inherit}
+.previous-form-actions{margin-left:auto}
+.previous-form-actions .previous-add-button{padding:11px 21px;font-size:16px}
+@media(max-width:600px){
+  .previous-number-name-row{grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px}
+  .previous-field-group .previous-name-label{font-size:12px}
+  .previous-field-group input{padding:10px 9px;font-size:13px}
+  .previous-form-actions .previous-add-button{padding:10px 17px;font-size:14px}
+}

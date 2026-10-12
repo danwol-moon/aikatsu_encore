@@ -568,8 +568,9 @@ function render(){
       const divider=document.createElement("div");
       divider.className="type-divider-images";
       divider.setAttribute("aria-hidden","true");
-      divider.innerHTML=[separatorCard.front,separatorCard.back].filter(hasImageUrl)
-        .map(src=>'<img src="'+esc(src)+'" alt="" loading="lazy">').join("");
+      divider.innerHTML=hasImageUrl(separatorCard.front)
+        ? '<img src="'+esc(separatorCard.front)+'" alt="" loading="lazy">'
+        : "";
       page.appendChild(divider);
     }
     previousListType=listType;

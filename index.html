@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=category-type-inline-20261012">
+<link rel="stylesheet" href="style.css?v=previous-card-preview-20261012">
 </head>
 <body>
 <div class="wrap">
@@ -29,6 +29,7 @@
     </div>
     <form id="previousCardForm" class="previous-card-form">
       <label class="previous-image-upload" for="previousCardImage">
+        <img id="previousImagePreview" class="previous-image-preview" alt="선택한 카드 이미지 미리보기" hidden>
         <span class="previous-upload-icon" aria-hidden="true">＋</span>
         <span id="previousImageLabel">카드 이미지 추가</span>
         <input id="previousCardImage" type="file" accept="image/*">
@@ -38,7 +39,7 @@
         <input id="previousCardImageUrl" type="url" placeholder="https://example.com/card.jpg" autocomplete="url">
         <p class="previous-image-url-hint">이미지 파일을 선택하거나, 이미지가 직접 열리는 주소를 입력해 주세요.</p>
         <label class="previous-name-label" for="previousCardNumber">카드 번호</label>
-        <input id="previousCardNumber" type="text" maxlength="50" placeholder="" autocomplete="off">
+        <input id="previousCardNumber" type="text" maxlength="50" placeholder="SP-001" autocomplete="off">
         <label class="previous-name-label" for="previousCardName">카드 이름</label>
         <input id="previousCardName" type="text" maxlength="100" placeholder="카드 이름을 입력해 주세요" required>
         <div class="previous-button-groups">
@@ -61,10 +62,10 @@
               <button type="button" class="previous-category-button" data-type="팝" aria-pressed="false">팝</button>
             </div>
           </div>
-        </div>
-        <div class="previous-form-actions">
-          <button id="previousCardSubmit" class="previous-add-button" type="submit">카드 추가</button>
-          <button id="previousCardCancelEdit" class="previous-cancel-button" type="button" hidden>수정 취소</button>
+          <div class="previous-form-actions">
+            <button id="previousCardSubmit" class="previous-add-button" type="submit">카드 추가</button>
+            <button id="previousCardCancelEdit" class="previous-cancel-button" type="button" hidden>수정 취소</button>
+          </div>
         </div>
       </div>
     </form>
@@ -190,6 +191,6 @@
     <button id="pageOwnedMode" type="button" aria-pressed="false">＋ 보유 체크</button>
   </div>
 </div>
-<script src="script.js?v=category-type-inline-20261012"></script>
+<script src="script.js?v=previous-card-preview-20261012"></script>
 </body>
 </html>

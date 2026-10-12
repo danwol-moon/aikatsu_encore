@@ -437,13 +437,7 @@ function renderPreviousCards(){
   }
   grid.innerHTML="";
   const categoryOrder=["상의","하의","원피스","슈즈","액세서리","악세서리"];
-  const typeOrder=["큐트","쿨","섹시","팝"];
   const orderedCards=[...previousCards].sort((a,b)=>{
-    const typeA=typeOrder.indexOf(a.type||"");
-    const typeB=typeOrder.indexOf(b.type||"");
-    const rankTypeA=typeA<0?typeOrder.length:typeA;
-    const rankTypeB=typeB<0?typeOrder.length:typeB;
-    if(rankTypeA!==rankTypeB)return rankTypeA-rankTypeB;
     const numberA=String(a.number||"").trim();
     const numberB=String(b.number||"").trim();
     if(numberA&&numberB){
@@ -459,13 +453,9 @@ function renderPreviousCards(){
     const rankB=rb<0?categoryOrder.length:rb;
     return rankA-rankB || (b.createdAt||0)-(a.createdAt||0);
   });
-  let previousRenderedType=null;
   orderedCards.forEach(card=>{
     const article=document.createElement("article");
     article.className="previous-series-card";
-    const renderedType=card.type||"타입 미등록";
-    if(renderedType!==previousRenderedType)article.classList.add("previous-type-row-start");
-    previousRenderedType=renderedType;
     const image=document.createElement("img");
     image.className="previous-series-card-image";
     if(["액세서리","악세서리"].includes(card.category))image.classList.add("previous-accessory-card-image");
@@ -545,8 +535,21 @@ function render(){
   const grid=$("grid");
   grid.innerHTML="";
   mobilePage=0;
-  const list=filtered();
+  const typeOrder=["큐트","쿨","섹시","팝"];
+  const canonicalType=value=>{
+    const key=normalize(value);
+    if(key==="큐트"||key==="큐티")return "큐트";
+    return key;
+  };
+  const typeRank=value=>{
+    const rank=typeOrder.indexOf(canonicalType(value));
+    return rank<0?typeOrder.length:rank;
+  };
+  const list=filtered().map((card,originalIndex)=>({card,originalIndex}))
+    .sort((a,b)=>typeRank(a.card.type)-typeRank(b.card.type)||a.originalIndex-b.originalIndex)
+    .map(item=>item.card);
   visibleCards=list;
+  let previousListType=null;
 
   list.forEach((card,index)=>{
     if(index%4===0){
@@ -557,6 +560,9 @@ function render(){
     const page=grid.lastElementChild;
     const el=document.createElement("article");
     el.className="card"+(isOwned(card)?" owned-card":" unowned-card");
+    const listType=canonicalType(card.type);
+    if(index===0||listType!==previousListType)el.classList.add("card-type-row-start");
+    previousListType=listType;
     const accessory=isAccessory(card);
     const heart=isWishlisted(card);
     el.innerHTML=`<div class="card-image${accessory?" accessory-card":""}">

@@ -433,5 +433,5 @@ main{padding:8px 18px}
 }
 
 
-/* 타입이 바뀌면 해당 카드부터 새 행에서 시작 */
-.previous-series-card.previous-type-row-start{grid-column:1}
+/* 카드 목록: 타입이 바뀌면 새 행에서 시작 */
+.card.card-type-row-start{grid-column:1}

@@ -434,6 +434,6 @@ main{padding:8px 18px}
 
 
 /* 카드 목록: 타입이 바뀌면 새 행에서 시작 */
-.type-divider-images{aspect-ratio:1/1.38;min-width:0;overflow:hidden;background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:12px;display:flex;align-items:center;justify-content:center}
-.type-divider-images img{width:100%;height:100%;object-fit:contain;display:block}
+.type-divider-images{aspect-ratio:1/1.38;min-width:0;overflow:hidden;background:var(--pocket);border:1px solid var(--pocket-edge);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:default;pointer-events:none}
+.type-divider-images img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
 .card.card-type-row-start{grid-column:1}

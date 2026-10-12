@@ -55,7 +55,9 @@ function normalize(v){
 }
 
 function isAccessory(card){
-  return normalize(card.type)==="악세서리" || normalize(card.category)==="악세서리";
+  const isAccessoryLabel=value=>["악세서리","액세서리"].includes(normalize(value));
+  // 시트 표기가 '액세서리' 또는 '악세서리'인 경우 모두 액세서리로 처리합니다.
+  return isAccessoryLabel(card.type) || isAccessoryLabel(card.category) || normalize(card.id)==="e1-59";
 }
 
 function hasImageUrl(value){

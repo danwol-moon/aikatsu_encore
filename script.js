@@ -3,7 +3,6 @@ const SHEET_GID="1943463274";
 const endpoint=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&range=A2:H`;
 
 let cards=[];
-let separatorCard=null;
 let mobilePage=0;
 let mobilePageCount=0;
 let touchStartX=0;
@@ -80,14 +79,10 @@ async function loadData(){
       const v=i=>c[i]?.v??"";
       return {id:v(0),category:v(1),type:v(2),grade:v(3),nameJa:v(4),nameKo:v(5),front:v(6),back:v(7)};
     };
-    // A2:H 전체를 한 번에 요청합니다. 483행(배열 인덱스 481)은 구분 이미지 전용입니다.
+    // A2:H 범위의 카드 데이터만 사용합니다. 빈 행은 앞/뒷면 이미지가 없어 자동으로 제외됩니다.
     const rows=json.table.rows;
-    separatorCard=rows[481]?parseRow(rows[481]):null;
-    if(separatorCard&&!hasImageUrl(separatorCard.front))separatorCard=null;
     cards=rows
-      .map((row,index)=>({card:parseRow(row),sheetRow:index+2}))
-      .filter(item=>item.sheetRow!==483)
-      .map(item=>item.card)
+      .map(parseRow)
       .filter(card=>hasImageUrl(card.front)&&hasImageUrl(card.back));
     buildFilters();
     updateCollectionCount();
@@ -565,17 +560,7 @@ function render(){
     const listSeason=seasonForId(card.id);
     const seasonChanged=listSeason!==previousListSeason;
     const typeChanged=listType!==previousListType;
-    const insertTypeDivider=index>0&&!seasonChanged&&listSeason!=="프로모션"&&previousListSeason!=="프로모션"&&typeChanged;
-    // 구분 이미지는 타입이 끝난 직후, 직전 카드가 속한 페이지에 추가합니다.
-    if(insertTypeDivider&&separatorCard&&grid.lastElementChild){
-      const divider=document.createElement("div");
-      divider.className="type-divider-images";
-      divider.setAttribute("aria-hidden","true");
-      divider.innerHTML=hasImageUrl(separatorCard.front)
-        ? '<img src="'+esc(separatorCard.front)+'" alt="" loading="lazy">'
-        : "";
-      grid.lastElementChild.appendChild(divider);
-    }
+    // 같은 탄 안에서 타입이 바뀌면 새 행을 시작합니다. 프로모션은 타입 구분을 적용하지 않습니다.
     if(index%4===0){
       const page=document.createElement("div");
       page.className="card-page";

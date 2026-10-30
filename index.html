@@ -8,13 +8,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=encore-blue-theme-20261030">
+<link rel="stylesheet" href="style.css?v=theme-picker-20261030">
 </head>
 <body>
 <div class="wrap">
   <header class="cover">
     <h1>아이카츠 앙코르</h1>
     <p class="sub">aikatsu encore</p>
+    <div class="theme-picker" role="group" aria-label="테마 색상 선택">
+      <span class="theme-picker-label">테마 색상</span>
+      <button type="button" class="theme-swatch" data-theme-choice="pink" aria-label="핑크색" aria-pressed="false"><span class="theme-swatch-dot theme-pink"></span><span>핑크</span></button>
+      <button type="button" class="theme-swatch" data-theme-choice="yellow" aria-label="노란색" aria-pressed="false"><span class="theme-swatch-dot theme-yellow"></span><span>노랑</span></button>
+      <button type="button" class="theme-swatch" data-theme-choice="lime" aria-label="연두색" aria-pressed="false"><span class="theme-swatch-dot theme-lime"></span><span>연두</span></button>
+      <button type="button" class="theme-swatch" data-theme-choice="blue" aria-label="하늘색에서 파란색" aria-pressed="false"><span class="theme-swatch-dot theme-blue"></span><span>하늘·파랑</span></button>
+      <button type="button" class="theme-swatch" data-theme-choice="purple" aria-label="연보라색" aria-pressed="false"><span class="theme-swatch-dot theme-purple"></span><span>연보라</span></button>
+      <button type="button" class="theme-swatch" data-theme-choice="dark" aria-label="검정색 다크 모드" aria-pressed="false"><span class="theme-swatch-dot theme-dark"></span><span>다크</span></button>
+    </div>
   </header>
   <div class="view-tabs" role="tablist" aria-label="페이지 선택">
     <button id="cardListTab" class="view-tab active" type="button" role="tab" aria-selected="true">카드 목록</button>
@@ -197,6 +206,6 @@
     <button id="pageOwnedMode" type="button" aria-pressed="false">＋ 보유 체크</button>
   </div>
 </div>
-<script src="script.js?v=previous-card-preview-20261012"></script>
+<script src="script.js?v=theme-picker-20261030"></script>
 </body>
 </html>

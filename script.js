@@ -13,6 +13,30 @@ let wishlistOnly=false;
 let ownedFilter=null; // null, 'owned', or 'unowned'
 let selectionMode=null; // null, 'wishlist', or 'owned'
 const $=id=>document.getElementById(id);
+
+// 사용자가 선택한 테마를 브라우저에 저장합니다. 기본 테마는 핑크입니다.
+const THEME_KEY="aikatsuEncoreTheme";
+const THEME_CHOICES=["pink","yellow","lime","blue","purple","dark"];
+function applyTheme(theme,save=false){
+  const selected=THEME_CHOICES.includes(theme)?theme:"pink";
+  document.documentElement.dataset.theme=selected;
+  document.querySelectorAll("[data-theme-choice]").forEach(button=>{
+    const active=button.dataset.themeChoice===selected;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+  const themeColors={pink:"#f7bfd0",yellow:"#f3d66b",lime:"#b9d98a",blue:"#168bd1",purple:"#c8b6ed",dark:"#17191f"};
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta)meta.content=themeColors[selected];
+  if(save){try{localStorage.setItem(THEME_KEY,selected);}catch(e){}}
+}
+document.querySelectorAll("[data-theme-choice]").forEach(button=>{
+  button.addEventListener("click",()=>applyTheme(button.dataset.themeChoice,true));
+});
+let initialTheme="pink";
+try{initialTheme=localStorage.getItem(THEME_KEY)||"pink";}catch(e){}
+applyTheme(initialTheme);
+
 const WISHLIST_KEY="aikatsuEncoreWishlist";
 const OWNED_KEY="aikatsuEncoreOwned";
 function readWishlist(){

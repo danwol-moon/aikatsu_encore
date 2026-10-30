@@ -435,3 +435,265 @@ main{padding:8px 18px}
 
 /* 카드 목록: 같은 탄에서 타입이 바뀌면 새 행에서 시작 */
 .card.card-type-row-start{grid-column:1}
+
+
+/* Aikatsu Encore-inspired visual theme: sky blue, white, pink and star accents.
+   This layer changes presentation only; existing layout and interactions remain intact. */
+:root{
+  --cover:#168bd1;
+  --cover-2:#0876bd;
+  --cover-ink:#fff;
+  --cover-soft:#e8f7ff;
+  --bg:#eaf7ff;
+  --paper:#fff;
+  --ink:#263c58;
+  --ink-soft:#71849b;
+  --pocket:#f4faff;
+  --pocket-edge:#c9e5f6;
+  --line:#d9edf9;
+  --accent:#ef6c9b;
+  --chip:#ffe8f1;
+  --shadow:0 5px 18px rgba(34,116,170,.12);
+}
+html{background:#eaf7ff}
+body{
+  background:
+    radial-gradient(circle at 8% 9%,rgba(255,255,255,.95) 0 2px,transparent 3px),
+    radial-gradient(circle at 91% 18%,rgba(255,255,255,.8) 0 2px,transparent 3px),
+    linear-gradient(180deg,#e5f5ff 0%,#f5fbff 48%,#eaf7ff 100%);
+  background-size:46px 46px,62px 62px,auto;
+  color:var(--ink);
+}
+.cover{
+  position:relative;
+  overflow:hidden;
+  border-radius:0 0 22px 22px;
+  padding:30px 20px 25px;
+  background:linear-gradient(112deg,#0877bd 0%,#159cda 52%,#54c4e9 100%);
+  border-bottom:5px solid #f6c84c;
+  box-shadow:0 5px 18px rgba(18,105,163,.2);
+}
+.cover:before,.cover:after{
+  content:"✦";
+  position:absolute;
+  color:rgba(255,255,255,.48);
+  font-size:42px;
+  line-height:1;
+  pointer-events:none;
+}
+.cover:before{left:7%;top:14px}
+.cover:after{right:8%;bottom:8px;font-size:30px}
+.cover h1{
+  color:#fff;
+  text-shadow:0 2px 0 rgba(0,66,120,.14);
+  letter-spacing:.04em;
+}
+.cover .sub{color:#e8f8ff;letter-spacing:.13em;text-transform:uppercase}
+.view-tabs{gap:9px}
+.view-tab{
+  border:1px solid #b8dff4;
+  border-radius:10px;
+  background:linear-gradient(#fff,#f2faff);
+  color:#176b9f;
+  box-shadow:0 3px 9px rgba(30,111,163,.1);
+  font-family:var(--body);
+  font-weight:700;
+}
+.view-tab.active{
+  color:#fff;
+  border-color:#087fc4;
+  background:linear-gradient(180deg,#25a8e3,#087fc4);
+  box-shadow:0 3px 10px rgba(8,127,196,.22);
+}
+.controls{padding-top:18px}
+.search-wrap{
+  border:1px solid #b9def2;
+  border-radius:10px;
+  box-shadow:0 3px 10px rgba(34,116,170,.08);
+}
+.search-icon{color:#1598d4}
+.search-wrap input{color:#263c58}
+.search-wrap input::placeholder{color:#91a8bc}
+.filters select{
+  border:1px solid #c5e3f4;
+  border-radius:9px;
+  background:#fff;
+  color:#31536f;
+}
+.filters select:focus,.search-wrap:focus-within{
+  outline:2px solid rgba(37,168,227,.2);
+  border-color:#42a9dc;
+}
+.collection-count{color:#176b9f}
+.collection-tools button,.modal-actions button,.modal-card-nav button{
+  border:1px solid #b9def2;
+  border-radius:9px;
+  background:#fff;
+  color:#176b9f;
+  font-family:var(--body);
+  font-weight:700;
+}
+.collection-tools button.active,.modal-actions button.active{
+  background:#1598d4;
+  border-color:#1598d4;
+  color:#fff;
+}
+.card-grid{gap:14px}
+.card{
+  border:1px solid #c8e4f4;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 3px 12px rgba(36,111,160,.1);
+}
+.card:hover{
+  box-shadow:0 8px 20px rgba(36,111,160,.18);
+}
+.card-image{
+  border:1px solid #d5eaf7;
+  border-radius:7px;
+  background:linear-gradient(145deg,#f7fcff,#eaf6ff);
+}
+.card-name{color:#254663}
+.card-id{color:#8197aa}
+.card-heart{
+  color:#e65d91;
+  box-shadow:0 1px 6px rgba(31,83,116,.16);
+}
+.card-heart.active{color:#e52f70}
+.card-season{
+  color:#176b9f;
+  border:1px solid #c8e4f4;
+}
+.page-action-bar{
+  background:rgba(255,255,255,.97);
+  border-top:1px solid #c5e3f4;
+  box-shadow:0 -5px 20px rgba(34,116,170,.12);
+}
+.page-action-hint{color:#718ba1}
+.page-action-buttons button{
+  border:1px solid #b9def2;
+  border-radius:9px;
+  background:#fff;
+  color:#176b9f;
+  font-family:var(--body);
+  font-weight:700;
+}
+.page-action-buttons button.active{
+  background:linear-gradient(180deg,#25a8e3,#087fc4);
+  border-color:#087fc4;
+  color:#fff;
+  box-shadow:0 3px 10px rgba(8,127,196,.2);
+}
+.modal-backdrop{background:rgba(20,48,76,.58)}
+.modal-dialog{
+  border:1px solid #c6e4f5;
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(22,66,100,.28);
+}
+.modal-close{
+  background:#e8f6ff;
+  color:#176b9f;
+}
+.detail-pocket{
+  border:1px solid #c6e4f5;
+  border-radius:9px;
+  background:#f3faff;
+}
+.name-ko{color:#176b9f}
+.name-ja{color:#7890a5}
+.info{border-color:#d9edf9}
+.info b{color:#e45f91}
+.detail-wishlist-heart{
+  border-color:#c5e3f4;
+  color:#e65d91;
+}
+.detail-wishlist-heart.active{
+  background:#ffe8f1;
+  border-color:#f2a8c3;
+}
+.owned-stepper{
+  border-color:#c5e3f4;
+  color:#176b9f;
+}
+.owned-stepper button{background:#e5f5ff;color:#176b9f}
+.owned-quantity{
+  color:#176b9f;
+  border-color:#b9def2;
+}
+.coordinate-slot,.saved-coordinate,.previous-card-form,.previous-series-card{
+  border-color:#c9e5f6;
+  background:#fff;
+  box-shadow:0 4px 14px rgba(34,116,170,.1);
+}
+.coordinate-slot label,.coordinate-heading h2,
+.saved-coordinates h3,.previous-series-heading h2,
+.previous-series-list-heading,.previous-card-fields label,
+.previous-category-label{color:#176b9f}
+.coordinate-picker,.coordinate-options{
+  border-color:#c5e3f4;
+  background:#fff;
+  color:#31536f;
+}
+.coordinate-option:hover{background:#edf8ff}
+.coordinate-preview img,.coordinate-image-frame,.saved-coordinate-image-frame{
+  border-color:#c5e3f4;
+  background:#f3faff;
+}
+.coordinate-save-tools button,.saved-coordinate-actions button,
+.previous-add-button{
+  border:1px solid #087fc4;
+  border-radius:9px;
+  background:linear-gradient(180deg,#25a8e3,#087fc4);
+  color:#fff;
+  font-family:var(--body);
+  font-weight:700;
+}
+.saved-coordinate-actions .delete-coordinate,
+.previous-cancel-button{
+  border:1px solid #c5e3f4;
+  background:#fff;
+  color:#176b9f;
+}
+.previous-image-upload{
+  border-color:#b9def2;
+  background:#f2faff;
+  color:#176b9f;
+}
+.previous-category-button{
+  border-color:#c5e3f4;
+  border-radius:8px;
+  background:#fff;
+  color:#176b9f;
+  font-family:var(--body);
+  font-weight:700;
+}
+.previous-category-button.active{
+  border-color:#1598d4;
+  background:#1598d4;
+  color:#fff;
+}
+#previousCardName,#previousCardImageUrl,#previousCardNumber,
+.previous-field-group input{
+  border-color:#c5e3f4;
+  border-radius:8px;
+}
+.previous-series-card-category,.previous-series-card-type{
+  background:#eaf6ff;
+  color:#287eae;
+}
+.previous-series-delete,.previous-series-actions button{
+  color:#176b9f;
+}
+.coordinate-placeholder-image,.saved-coordinate-empty-image{
+  border-color:#c5e3f4;
+  background:#f3faff;
+  color:#89abc2;
+}
+@media(max-width:600px){
+  .cover{padding:25px 16px 21px}
+  .cover h1{font-size:29px}
+  .view-tab{border-radius:8px}
+  .filters select{border-radius:8px}
+  .card{border-radius:7px}
+  .card-image{border-radius:5px}
+}

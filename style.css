@@ -697,3 +697,57 @@ body{
   .card{border-radius:7px}
   .card-image{border-radius:5px}
 }
+
+
+/* 사용자 선택 테마: 모든 화면에서 색상만 전환하고 카드 데이터/기능은 유지 */
+:root{
+  --theme-cover:#f7bfd0;--theme-cover-2:#e995b2;--theme-bg:#fff2f6;
+  --theme-paper:#fff;--theme-ink:#4a2634;--theme-soft:#976676;
+  --theme-pocket:#fff7fa;--theme-edge:#f1cbd8;--theme-line:#f7dde6;
+  --theme-accent:#e06a94;--theme-accent-dark:#bd4e79;--theme-chip:#fde8ef;
+  --theme-shadow:rgba(177,83,119,.13);--theme-cover-text:#642d43;
+}
+html[data-theme="pink"]{--theme-cover:#f7bfd0;--theme-cover-2:#e995b2;--theme-bg:#fff2f6;--theme-paper:#fff;--theme-ink:#4a2634;--theme-soft:#976676;--theme-pocket:#fff7fa;--theme-edge:#f1cbd8;--theme-line:#f7dde6;--theme-accent:#e06a94;--theme-accent-dark:#bd4e79;--theme-chip:#fde8ef;--theme-shadow:rgba(177,83,119,.13);--theme-cover-text:#642d43}
+html[data-theme="yellow"]{--theme-cover:#f2d66e;--theme-cover-2:#e9bd43;--theme-bg:#fffbea;--theme-paper:#fffef8;--theme-ink:#514323;--theme-soft:#94804c;--theme-pocket:#fffdf2;--theme-edge:#eadb9e;--theme-line:#f2e9c5;--theme-accent:#d5a928;--theme-accent-dark:#a98216;--theme-chip:#fff2c4;--theme-shadow:rgba(153,122,36,.13);--theme-cover-text:#594718}
+html[data-theme="lime"]{--theme-cover:#b9d98a;--theme-cover-2:#91bf65;--theme-bg:#f4faeb;--theme-paper:#fff;--theme-ink:#35472c;--theme-soft:#718761;--theme-pocket:#f8fcef;--theme-edge:#d0e3b8;--theme-line:#e4efd6;--theme-accent:#83ae55;--theme-accent-dark:#608b38;--theme-chip:#e9f4dc;--theme-shadow:rgba(91,130,57,.13);--theme-cover-text:#314a24}
+html[data-theme="blue"]{--theme-cover:#168bd1;--theme-cover-2:#0876bd;--theme-bg:#eaf7ff;--theme-paper:#fff;--theme-ink:#263c58;--theme-soft:#71849b;--theme-pocket:#f4faff;--theme-edge:#c9e5f6;--theme-line:#d9edf9;--theme-accent:#1598d4;--theme-accent-dark:#087fc4;--theme-chip:#e4f5ff;--theme-shadow:rgba(34,116,170,.13);--theme-cover-text:#fff}
+html[data-theme="purple"]{--theme-cover:#c8b6ed;--theme-cover-2:#a994d9;--theme-bg:#f7f3ff;--theme-paper:#fff;--theme-ink:#403452;--theme-soft:#89799f;--theme-pocket:#fbf9ff;--theme-edge:#ddd0f2;--theme-line:#ebe3f7;--theme-accent:#a58bd6;--theme-accent-dark:#8066b5;--theme-chip:#eee7fb;--theme-shadow:rgba(112,85,157,.13);--theme-cover-text:#403052}
+html[data-theme="dark"]{--theme-cover:#252a35;--theme-cover-2:#151922;--theme-bg:#11141b;--theme-paper:#202530;--theme-ink:#edf0f6;--theme-soft:#a7b0c1;--theme-pocket:#191e28;--theme-edge:#3a4352;--theme-line:#303846;--theme-accent:#8d9ee8;--theme-accent-dark:#687bc9;--theme-chip:#30394b;--theme-shadow:rgba(0,0,0,.28);--theme-cover-text:#f5f6fb}
+html[data-theme]{
+  color-scheme:light;
+  --cover:var(--theme-cover);--cover-2:var(--theme-cover-2);--cover-ink:var(--theme-cover-text);--cover-soft:var(--theme-soft);
+  --bg:var(--theme-bg);--paper:var(--theme-paper);--ink:var(--theme-ink);--ink-soft:var(--theme-soft);
+  --pocket:var(--theme-pocket);--pocket-edge:var(--theme-edge);--line:var(--theme-line);
+  --accent:var(--theme-accent);--chip:var(--theme-chip);--shadow:0 5px 18px var(--theme-shadow);
+}
+html[data-theme="dark"]{color-scheme:dark}
+html[data-theme] body{background:var(--theme-bg);color:var(--theme-ink)}
+html[data-theme] .cover{background:linear-gradient(112deg,var(--theme-cover-2),var(--theme-cover));border-bottom-color:var(--theme-accent)}
+html[data-theme] .cover h1,html[data-theme] .cover .sub{color:var(--theme-cover-text)}
+html[data-theme] .view-tab,html[data-theme] .collection-tools button,html[data-theme] .modal-actions button,html[data-theme] .modal-card-nav button,html[data-theme] .page-action-buttons button{border-color:var(--theme-edge);color:var(--theme-accent-dark);background:var(--theme-paper)}
+html[data-theme] .view-tab.active,html[data-theme] .collection-tools button.active,html[data-theme] .modal-actions button.active,html[data-theme] .page-action-buttons button.active{background:var(--theme-accent);border-color:var(--theme-accent);color:#fff}
+html[data-theme] .search-wrap,html[data-theme] .filters select,html[data-theme] .card,html[data-theme] .coordinate-slot,html[data-theme] .saved-coordinate,html[data-theme] .previous-card-form,html[data-theme] .previous-series-card{background:var(--theme-paper);border-color:var(--theme-edge);color:var(--theme-ink)}
+html[data-theme] .search-wrap input,html[data-theme] .filters select,html[data-theme] .coordinate-picker,html[data-theme] .coordinate-options,html[data-theme] .coordinate-option,html[data-theme] .previous-field-group input{background:var(--theme-paper);color:var(--theme-ink);border-color:var(--theme-edge)}
+html[data-theme] .card-image,html[data-theme] .detail-pocket,html[data-theme] .coordinate-preview img,html[data-theme] .coordinate-image-frame,html[data-theme] .saved-coordinate-image-frame,html[data-theme] .previous-image-upload{background:var(--theme-pocket);border-color:var(--theme-edge)}
+html[data-theme] .card-name,html[data-theme] .collection-count,html[data-theme] .coordinate-slot label,html[data-theme] .coordinate-heading h2,html[data-theme] .saved-coordinates h3,html[data-theme] .previous-series-heading h2,html[data-theme] .previous-series-list-heading,html[data-theme] .previous-card-fields label{color:var(--theme-accent-dark)}
+html[data-theme] .card-id,html[data-theme] .coordinate-heading p,html[data-theme] .coordinate-save-hint,html[data-theme] .page-action-hint{color:var(--theme-soft)}
+html[data-theme] .coordinate-save-tools button,html[data-theme] .saved-coordinate-actions button,html[data-theme] .previous-add-button{background:var(--theme-accent);border-color:var(--theme-accent);color:#fff}
+html[data-theme] .previous-category-button{background:var(--theme-paper);border-color:var(--theme-edge);color:var(--theme-accent-dark)}
+html[data-theme] .previous-category-button.active{background:var(--theme-accent);border-color:var(--theme-accent);color:#fff}
+html[data-theme] .previous-series-card-category,html[data-theme] .previous-series-card-type{background:var(--theme-chip);color:var(--theme-accent-dark)}
+html[data-theme] .page-action-bar{background:var(--theme-paper);border-color:var(--theme-edge)}
+html[data-theme] .modal-dialog{background:var(--theme-paper);border-color:var(--theme-edge);color:var(--theme-ink)}
+html[data-theme] .modal-close{background:var(--theme-chip);color:var(--theme-accent-dark)}
+html[data-theme="dark"] .card-heart{background:#30394b;color:#ff9ab8}
+html[data-theme="dark"] .card-season,html[data-theme="dark"] .owned-quantity{background:#30394b;color:#e5eaff;border-color:#56627a}
+html[data-theme="dark"] .detail-wishlist-heart.active{background:#473044;border-color:#87506d}
+html[data-theme="dark"] .owned-stepper button{background:#30394b;color:#e5eaff}
+html[data-theme="dark"] .saved-coordinate-title{background:var(--theme-paper);border-color:var(--theme-edge);color:var(--theme-ink)}
+html[data-theme="dark"] .previous-cancel-button,html[data-theme="dark"] .saved-coordinate-actions .delete-coordinate{background:var(--theme-paper);color:var(--theme-ink);border-color:var(--theme-edge)}
+.theme-picker{display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;margin:18px auto 0;max-width:720px}
+.theme-picker-label{width:100%;color:var(--theme-cover-text);font-size:12px;font-weight:700;letter-spacing:.04em}
+.theme-swatch{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid rgba(255,255,255,.48);border-radius:999px;background:rgba(255,255,255,.16);color:var(--theme-cover-text);font-size:12px;cursor:pointer}
+.theme-swatch.active{background:rgba(255,255,255,.95);color:#263c58;border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.28)}
+.theme-swatch-dot{display:inline-block;width:13px;height:13px;border-radius:50%;border:1px solid rgba(0,0,0,.12)}
+.theme-pink{background:#f3a9c0}.theme-yellow{background:#f0d05e}.theme-lime{background:#a9d47c}.theme-blue{background:linear-gradient(135deg,#75d5ee,#087fc4)}.theme-purple{background:#c8b6ed}.theme-dark{background:#20232b}
+@media(max-width:600px){.theme-picker{gap:5px;margin-top:14px}.theme-swatch{padding:6px 8px;font-size:11px}}
